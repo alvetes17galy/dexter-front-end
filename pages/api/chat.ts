@@ -17,7 +17,7 @@ export default async function handler(
   // OpenAI recommends replacing newlines with spaces for best results
   const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
 
-  const index = pinecone.Index("galy");
+  const index = pinecone.Index(PINECONE_INDEX_NAME);
 
   /* create vectorstore*/
   const vectorStore = await PineconeStore.fromExistingIndex(
@@ -33,7 +33,6 @@ export default async function handler(
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache, no-transform',
     Connection: 'keep-alive',
-    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
   });
 
   const sendData = (data: string) => {
