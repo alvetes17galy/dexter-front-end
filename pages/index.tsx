@@ -74,11 +74,11 @@ export default function Home() {
     setMessageState((state) => ({ ...state, pending: '' }));
 
     const ctrl = new AbortController();
-    const apiKey=process.env.OPENAI_API_KEY;
+    //const apiKey=process.env.OPENAI_API_KEY;
     //const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
+    /*if (!apiKey) {
       throw new Error('API key not found');
-    }
+    }*/
     const encodedApiKey = encodeURIComponent("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");
     
 
