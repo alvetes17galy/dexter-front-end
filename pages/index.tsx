@@ -74,13 +74,14 @@ export default function Home() {
     setMessageState((state) => ({ ...state, pending: '' }));
 
     const ctrl = new AbortController();
+    const apiKey=process.env.OPENAI_API_KEY;
 
     try {
       fetchEventSource('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer <token>'
+          'Authorization': 'Bearer ${apiKey}'
 
         },
         body: JSON.stringify({
