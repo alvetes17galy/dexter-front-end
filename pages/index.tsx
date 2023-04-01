@@ -79,10 +79,7 @@ export default function Home() {
     try {
       fetchEventSource('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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'
-        },
+        
         body: JSON.stringify({
           question,
           history,

@@ -86,9 +86,9 @@ export default async function handler(
     },
   );
 
-  /*res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
-  res.setHeader('Connection', 'keep-alive');*/
+  res.setHeader('Connection', 'keep-alive');
 
   const sendData = (data: string) => {
     res.write(`data: ${data}\n\n`);
