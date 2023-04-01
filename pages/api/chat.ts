@@ -89,7 +89,6 @@ export default async function handler(
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
-  res.setHeader('Authorization', `Bearer ${process.env.OPENAI_API_KEY}`);
 
   const sendData = (data: string) => {
     res.write(`data: ${data}\n\n`);
