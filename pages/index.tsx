@@ -75,11 +75,21 @@ export default function Home() {
 
     const ctrl = new AbortController();
     const apiKey=process.env.OPENAI_API_KEY;
+    //const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('API key not found');
+    }
+    const encodedApiKey = encodeURIComponent(apiKey);
+    
 
     try {
       fetchEventSource('/api/chat', {
         method: 'POST',
-        
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${encodedApiKey}`,
+        },
+
         body: JSON.stringify({
           question,
           history,
