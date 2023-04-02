@@ -79,7 +79,8 @@ export default function Home() {
     /*if (!apiKey) {
       throw new Error('API key not found');
     }*/
-    const encodedApiKey = encodeURIComponent("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");
+    const encodedApiKey = process.env.OPENAI_API_KEY;
+    console.log("The open AI key is:" +encodedApiKey);
     
 
     try {

@@ -12,7 +12,7 @@ async function initPinecone() {
       environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
       apiKey: process.env.PINECONE_API_KEY ?? '',
     });
-
+   
     return pinecone;
   } catch (error) {
     console.log('error', error);
