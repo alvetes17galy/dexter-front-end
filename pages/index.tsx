@@ -80,9 +80,7 @@ export default function Home() {
       throw new Error('API key not found');
     }*/
     const encodedApiKey = process.env.OPENAI_API_KEY;
-    console.log("The open AI key is:" +encodedApiKey);
     
-
     try {
       fetchEventSource('/api/chat', {
         method: 'POST',
@@ -198,7 +196,7 @@ export default function Home() {
                   } else {
                     icon = (
                       <Image
-                        src="/usericon.jpeg"
+                        src="/usericonred.png"
                         alt="Me"
                         width="30"
                         height="30"
@@ -243,7 +241,7 @@ export default function Home() {
                                       {doc.pageContent}
                                     </ReactMarkdown>
                                     <p className="mt-2">
-                                      <b>Source:</b> {doc.metadata.source}
+                                      <b>Source:</b> {doc.metadata.source.substring(0)}
                                     </p>
                                   </AccordionContent>
                                 </AccordionItem>

@@ -1,6 +1,7 @@
 import { Document } from 'langchain/document';
 import { readFile } from 'fs/promises';
 import { BaseDocumentLoader } from 'langchain/document_loaders';
+import * as path from 'path';
 
 export abstract class BufferLoader extends BaseDocumentLoader {
   constructor(public filePathOrBlob: string | Blob) {
@@ -17,7 +18,9 @@ export abstract class BufferLoader extends BaseDocumentLoader {
     let metadata: Record<string, string>;
     if (typeof this.filePathOrBlob === 'string') {
       buffer = await readFile(this.filePathOrBlob);
-      metadata = { source: this.filePathOrBlob };
+      const documentTitle=path.basename(this.filePathOrBlob, path.extname(this.filePathOrBlob));
+      console.log(documentTitle);
+      metadata = { source: documentTitle };
     } else {
       buffer = await this.filePathOrBlob
         .arrayBuffer()
