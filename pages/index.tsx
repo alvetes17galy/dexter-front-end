@@ -1,3 +1,4 @@
+import React from 'react';
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import Layout from '@/components/layout';
 import styles from '@/styles/Home.module.css';
@@ -14,6 +15,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 
+
 export default function Home() {
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -27,7 +29,7 @@ export default function Home() {
   }>({
     messages: [
       {
-        message: 'I am your AI assistant at Galy, can I help?',
+        message: 'I am Dexter, your AI assistant at Galy, can I help?',
         type: 'apiMessage',
       },
     ],
@@ -39,10 +41,36 @@ export default function Home() {
 
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [passwordEntered, setPasswordEntered] = useState<boolean>(false);
+  const [passwordPromptShown, setPasswordPromptShown] = useState<boolean>(false);
 
+
+
+  function checkPassword() {
+    const password = prompt('Enter keywords to start using the program:');
+    if (password==null)
+    {
+      setPasswordEntered(false);
+    }
+    else if (password === 'galy'||password==='2023') {
+      setPasswordEntered(true);
+      setPasswordPromptShown(true);
+        } else {
+      alert('Incorrect password. Please try again.');
+    }
+  }
+  useEffect(() => {
+    if (!passwordEntered && !passwordPromptShown) {
+      setPasswordPromptShown(true);
+      checkPassword();
+    }
+  }, [passwordEntered, passwordPromptShown]);
+  
+  
   useEffect(() => {
     textAreaRef.current?.focus();
   }, []);
+
 
   //handle form submission
   async function handleSubmit(e: any) {
@@ -170,10 +198,11 @@ export default function Home() {
 
   return (
     <>
+    {passwordEntered ? (
       <Layout>
         <div className="mx-auto flex flex-col gap-4">
           <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-            Welcome to Galy AI  💚❤️🌏🌱🔬
+            Welcome to Dexter  💚❤️🌏🌱🔬
           </h1>
           <main className={styles.main}>
             <div className={styles.cloud}>
@@ -184,7 +213,7 @@ export default function Home() {
                   if (message.type === 'apiMessage') {
                     icon = (
                       <Image
-                        src="/bot-image.png"
+                        src="/dexter.png"
                         alt="AI"
                         width="40"
                         height="40"
@@ -196,7 +225,7 @@ export default function Home() {
                   } else {
                     icon = (
                       <Image
-                        src="/usericonred.png"
+                        src="/bot-image.png"
                         alt="Me"
                         width="30"
                         height="30"
@@ -329,7 +358,7 @@ export default function Home() {
         <footer className="m-auto p-4">
             @Galy 2023.
         </footer>
-      </Layout>
+      </Layout>):(<div></div>)}
     </>
   );
 }
