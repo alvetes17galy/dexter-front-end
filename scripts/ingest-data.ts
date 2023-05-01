@@ -9,6 +9,26 @@ import { DirectoryLoader } from 'langchain/document_loaders';
 /* Name of directory to retrieve your files from */
 const filePath = 'docs';
 
+export const deleteAllVectors = async () => {
+  try {
+    const index = pinecone.Index(PINECONE_INDEX_NAME); 
+    console.log("index connected");
+    const namespace="pdf-test"
+    // Delete all vectors in the given namespace
+    await index.delete1({
+      deleteAll: true,
+      namespace,
+    });
+    console.log('All vectors deleted from Pinecone');
+  } catch (error) {
+    console.log('error', error);
+    throw new Error('Failed to delete all vectors from Pinecone');
+  }
+};
+
+// Call the function to delete all vectors
+
+
 export const run = async () => {
   try {
     /*load raw docs from the all files in the directory */
@@ -31,7 +51,7 @@ export const run = async () => {
     console.log('creating vector store...');
     /*create and store the embeddings in the vectorStore*/
     const embeddings = new OpenAIEmbeddings();
-    const index = pinecone.Index(PINECONE_INDEX_NAME); //change to your own index name
+    const index = pinecone.Index(PINECONE_INDEX_NAME); 
 
     //embed the PDF documents
     await PineconeStore.fromDocuments(docs, embeddings, {

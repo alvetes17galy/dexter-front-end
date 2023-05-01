@@ -17,6 +17,7 @@ import {
 
 
 export default function Home() {
+ 
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [sourceDocs, setSourceDocs] = useState<Document[]>([]);
@@ -43,8 +44,46 @@ export default function Home() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [passwordEntered, setPasswordEntered] = useState<boolean>(false);
   const [passwordPromptShown, setPasswordPromptShown] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [showMessage, setShowMessage] = useState(false);
 
+  const [fileSubmitted, setFileSubmitted] = useState(false);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      setFile(file);
+    }
+  };
+  
+  const handleSubmitFile = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!file) return;
+
+    setFileSubmitted(true);
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 3000);
+    
+  
+    const formData = new FormData();
+    formData.append("pdf", file);
+  
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+  
+    if (response.ok) {
+      const { url } = await response.json();
+      console.log(`Uploaded file to ${url}`);
+    } else {
+      console.error(response.statusText);
+    }
+  };
+  
 
   function checkPassword() {
     const password = prompt('Enter keywords to start using the program:');
@@ -201,9 +240,26 @@ export default function Home() {
     {passwordEntered ? (
       <Layout>
         <div className="mx-auto flex flex-col gap-4">
+        <form onSubmit={handleSubmitFile}>
+      <input
+        type="file"
+        name="pdf"
+        onChange={handleFileChange}
+        className="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      />
+      <button type="submit" className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+        Submit
+      </button>
+      {fileSubmitted && showMessage && (
+        <div className="text-green-300 ml-4">PDF ingested</div>
+      )}
+    </form>
           <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
             Welcome to Dexter  💚❤️🌏🌱🔬
           </h1>
+         
+
+
           <main className={styles.main}>
             <div className={styles.cloud}>
               <div ref={messageListRef} className={styles.messagelist}>

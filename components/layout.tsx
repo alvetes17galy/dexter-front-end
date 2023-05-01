@@ -11,6 +11,7 @@ export default function Layout({ children }: LayoutProps) {
             <a href="https://galy.co" className="hover:text-slate-600 cursor-pointer">
               Home
             </a>
+            
           </nav>
         </div>
       </header>
