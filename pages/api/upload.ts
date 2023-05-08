@@ -51,10 +51,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         /* Move uploaded files to directory */
-        for (const file of files) {
+       /* for (const file of files) {
             const tempPath = file[1].filepath;
             await fs.rename(tempPath, targetPath + file[1].originalFilename);
+        }*/
+
+         /* Move uploaded files to directory */
+        for (const file of files) {
+            const tempPath = file[1].filepath;
+            await fs.copyFile(tempPath, targetPath + file[1].originalFilename);
+            await fs.rm(tempPath);
         }
+
 
      await deleteAllVectors();
      await run();
