@@ -1,0 +1,98 @@
+.login-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid red;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    margin-top: 5%;
+  }
+  
+  .login-form h2 {
+    text-align: center;
+    color: black;
+    font-weight: bold;
+  }
+
+  .register-form h2 {
+    text-align: center;
+    color: black;
+    font-weight: bold;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ff0000;
+    font-weight:bold
+  }
+  .form-group label .register-label{
+    display: block;
+      margin-bottom: 5px;
+      color: blue;
+      font-weight:bold
+    
+  }
+  
+  input[type='email'],
+  input[type='password'],
+  input[type='text'] {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .login-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .register-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .error-message{
+    text-align: center;
+    color: #ff0000;
+    
+  }
+
+  .switch-button{
+    text-align: center;
+    color: black;
+    margin-left: 42%;
+    
+  }
+
+  .register-form{
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid blue;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    margin-top: 5%;
+  }
+
+
+  

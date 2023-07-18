@@ -1,4 +1,5 @@
 import '@/styles/base.css';
+import '@/styles/LoginForm.css'
 import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
 

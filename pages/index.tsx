@@ -8,6 +8,10 @@ import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { Document } from 'langchain/document';
+import { query } from '../lib/db';
+
+import ReactDOM from 'react-dom'
+import LoginForm from '../components/ui/LoginForm'
 import {
   Accordion,
   AccordionContent,
@@ -18,6 +22,28 @@ import {
 
 export default function Home() {
  
+ const [showLoginForm,setShowLoginForm]=useState(true);
+  const [data, setData] = useState([]);
+
+ /* useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/data');
+        const results = await response.json();
+        setData(results);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);*/
+  
+  const handleLoginFormSubmit=()=>{
+    //Perform Login Actions
+    console.log("Form submitted")
+    setShowLoginForm(false);
+  };
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [sourceDocs, setSourceDocs] = useState<Document[]>([]);
@@ -30,7 +56,7 @@ export default function Home() {
   }>({
     messages: [
       {
-        message: 'I am Dexter, your AI assistant at Galy, can I help?',
+        message: 'I am Dexter, your AI assistant at Galy, how can I help?',
         type: 'apiMessage',
       },
     ],
@@ -85,7 +111,7 @@ export default function Home() {
   };
   
 
-  function checkPassword() {
+ /*function checkPassword() {
     const password = prompt('Enter keywords to start using the program:');
     if (password==null)
     {
@@ -103,7 +129,7 @@ export default function Home() {
       setPasswordPromptShown(true);
       checkPassword();
     }
-  }, [passwordEntered, passwordPromptShown]);
+  }, [passwordEntered, passwordPromptShown]);*/
   
   
   useEffect(() => {
@@ -237,7 +263,7 @@ export default function Home() {
 
   return (
     <>
-    {passwordEntered ? (
+    {!showLoginForm ? (
       <Layout>
         <div className="mx-auto flex flex-col gap-4">
         <form onSubmit={handleSubmitFile}>
@@ -258,8 +284,6 @@ export default function Home() {
             Welcome to Dexter  💚❤️🌏🌱🔬
           </h1>
          
-
-
           <main className={styles.main}>
             <div className={styles.cloud}>
               <div ref={messageListRef} className={styles.messagelist}>
@@ -289,7 +313,7 @@ export default function Home() {
                         priority
                       />
                     );
-                    // The latest message sent by the user will be animated while waiting for a response
+                    
                     className =
                       loading && index === chatMessages.length - 1
                         ? styles.usermessagewaiting
@@ -414,7 +438,11 @@ export default function Home() {
         <footer className="m-auto p-4">
             @Galy 2023.
         </footer>
-      </Layout>):(<div></div>)}
+
+      </Layout>):(<div><LoginForm onSubmit={handleLoginFormSubmit}/></div>)}
     </>
   );
+
+  
 }
+

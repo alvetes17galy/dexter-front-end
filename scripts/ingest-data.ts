@@ -27,8 +27,6 @@ export const deleteAllVectors = async () => {
 };
 
 // Call the function to delete all vectors
-
-
 export const run = async () => {
   try {
     /*load raw docs from the all files in the directory */
