@@ -139,7 +139,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           <h2>Dexter Registration</h2>
           {emailError && (
         <div className="error-message">
-          Please include a valid '@galy.co' email.
+          Please include a valid @galy.co email.
         </div>
       )}
           <form onSubmit={handleRegisterSubmit}>
