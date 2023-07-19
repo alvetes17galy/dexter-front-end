@@ -1,4 +1,5 @@
 
+//Login and register forms
 import React, { useState } from "react";
 
 interface LoginFormProps {
