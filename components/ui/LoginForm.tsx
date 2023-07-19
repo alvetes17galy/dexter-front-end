@@ -30,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     event.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:8000/login", {
+      const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     }
     
     try {
-      const response = await fetch("http://localhost:8000/register", {
+      const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
