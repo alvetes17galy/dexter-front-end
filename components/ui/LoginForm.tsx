@@ -41,6 +41,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
       if (response.ok) {
         // Login successful
+        const responseBody=await response.json();
+        const token=responseBody.access_token
+        localStorage.setItem("token",token);
         setLoginError(false);
         onSubmit();
         // Redirect to the desired page or perform other actions

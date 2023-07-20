@@ -21,7 +21,7 @@ import {
 
 
 export default function Home() {
- 
+  
  const [showLoginForm,setShowLoginForm]=useState(true);
   const [data, setData] = useState([]);
 
@@ -41,7 +41,7 @@ export default function Home() {
   
   const handleLoginFormSubmit=()=>{
     //Perform Login Actions
-    console.log("Form submitted")
+    
     setShowLoginForm(false);
   };
   const [query, setQuery] = useState<string>('');
@@ -56,7 +56,7 @@ export default function Home() {
   }>({
     messages: [
       {
-        message: 'I am Dexter, your AI assistant at Galy, how can I help?',
+        message: 'I am Dexter, your AI assistant at Galy, how can I help you?',
         type: 'apiMessage',
       },
     ],
@@ -136,9 +136,10 @@ export default function Home() {
     textAreaRef.current?.focus();
   }, []);
 
-
   //handle form submission
   async function handleSubmit(e: any) {
+    const token=localStorage.getItem("token");
+    console.log("The token is: ",token)
     e.preventDefault();
 
     setError(null);
@@ -149,7 +150,35 @@ export default function Home() {
     }
 
     const question = query.trim();
+    const user_input=question
+    const model_output="string";
+    const user_feedback=true;
 
+
+    try {
+      const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/collect-user-input", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({user_input,model_output,user_feedback}),
+      });
+
+      if (response.ok) {
+        // Login successful
+        const responseBody=await response.json();
+        console.log(responseBody);
+      
+      } else {
+        // Login failed
+        console.log("Failed to store user data")
+    
+      }
+    } catch (error) {
+      console.error("Error submitting analytics:", error);
+    }
+ 
     setMessageState((state) => ({
       ...state,
       messages: [
