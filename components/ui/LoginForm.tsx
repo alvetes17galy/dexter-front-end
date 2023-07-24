@@ -143,7 +143,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           </form>
           <br />
           <button className="switch-button-login" onClick={handleSwitchToRegister}>
-            Don't have an account yet?
+            Do not have an account yet?
           </button>
         </div>
       ) : (
@@ -199,7 +199,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
           <button className="switch-button" onClick={handleSwitchToLogin}>
             Back to login
           </button>
+        
+          <p className="register-note">*Note: you will be redirected to the login page once you register.</p>
         </div>
+        
       )}
     </div>
   );
