@@ -13,6 +13,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const [loginError, setLoginError] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(true);
   const [emailError, setEmailError]=useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+
+
+
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -75,12 +79,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
       if (response.ok) {
         
-
-        setLoginError(false);
-        onSubmit();
-        
-        
       
+          // Set isRegistered to true when registration is successful
+        setEmailError(false); // Reset emailError if it was previously set
+    
+        onSubmit();
+      window.location.reload();
       } else {
         // Login failed
         setLoginError(true);
@@ -92,10 +96,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
   const handleSwitchToRegister = () => {
     setShowLoginForm(false);
+    setIsRegistered(false);
+    setEmailError(false);
   };
 
   const handleSwitchToLogin = () => {
     setShowLoginForm(true);
+    setIsRegistered(false);
+    setEmailError(false);
   };
 
   return (
@@ -134,8 +142,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
             </button>
           </form>
           <br />
-          <button className="switch-button" onClick={handleSwitchToRegister}>
-            Register...
+          <button className="switch-button-login" onClick={handleSwitchToRegister}>
+            Don't have an account yet?
           </button>
         </div>
       ) : (
@@ -184,12 +192,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
               />
             </div>
             <button className="register-button" type="submit">
-              Register and login
+              Register
             </button>
           </form>
           <br />
           <button className="switch-button" onClick={handleSwitchToLogin}>
-            Login...
+            Back to login
           </button>
         </div>
       )}

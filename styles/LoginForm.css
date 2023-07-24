@@ -80,8 +80,24 @@
   .switch-button{
     text-align: center;
     color: black;
-    margin-left: 42%;
+    margin-left: 37%;
+    transition: color 0.3s ease;
     
+  }
+
+  .switch-button:hover{
+    color: red;
+  }
+  
+  .switch-button-login{
+    text-align: center;
+    color: black;
+    margin-left: 25%;
+    transition: color 0.3s ease;
+  }
+
+  .switch-button-login:hover{
+    color:red;
   }
 
   .register-form{
