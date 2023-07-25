@@ -37,6 +37,3 @@ Once you've verified that the embeddings and content have been successfully adde
 - Make sure you're using the same versions of LangChain and Pinecone as this repo.
 - Check that you've created an `.env` file that contains your valid (and working) API keys, environment and index name.
 
- plan are deleted after 7 days of inactivity. To prevent this, send an API request to Pinecone to reset the counter.
-- Retry from scratch with a new Pinecone index and cloned repo.
-
