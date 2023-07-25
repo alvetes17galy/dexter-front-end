@@ -155,7 +155,7 @@ export default function Home() {
     const user_feedback=true;
 
 
-    try {
+    /*try {
       const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/collect-user-input", {
         method: "POST",
         headers: {
@@ -177,7 +177,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error submitting analytics:", error);
-    }
+    }*/
  
     setMessageState((state) => ({
       ...state,
@@ -214,6 +214,7 @@ export default function Home() {
         body: JSON.stringify({
           question,
           history,
+          token,
         }),
         signal: ctrl.signal,
         onmessage: (event) => {

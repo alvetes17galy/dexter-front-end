@@ -66,7 +66,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { question, history } = req.body;
+  const { question, history,token } = req.body;
 
   if (!question) {
     return res.status(400).json({ message: 'No question in the request' });
@@ -107,8 +107,36 @@ export default async function handler(
       question: sanitizedQuestion,
       chat_history: history || [],
     });
+    const user_input=question
+    const model_output=response.text;
+    const user_feedback=true;
 
-    console.log('response', response);
+    console.log("User input is: ",question);
+    console.log("Model output is:", model_output);
+  
+
+       try {
+      const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/collect-user-input", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({user_input,model_output,user_feedback}),
+      });
+
+      if (response.ok) {
+        const responseBody=await response.json();
+        console.log(responseBody);
+      
+      } else {
+        // Login failed
+        console.log("Failed to store user data")
+    
+      }
+    } catch (error) {
+      console.error("Error submitting analytics:", error);
+    }
     sendData(JSON.stringify({ sourceDocs: response.sourceDocuments }));
   } catch (error) {
     console.log('error', error);
