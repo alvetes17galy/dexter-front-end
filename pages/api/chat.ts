@@ -130,7 +130,6 @@ export default async function handler(
         console.log(responseBody);
       
       } else {
-        // Login failed
         console.log("Failed to store user data")
     
       }

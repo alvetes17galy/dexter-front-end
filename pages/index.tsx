@@ -138,8 +138,8 @@ export default function Home() {
 
   //handle form submission
   async function handleSubmit(e: any) {
-    const token=localStorage.getItem("token");
-    console.log("The token is: ",token)
+
+    const token=localStorage.getItem("token"); //Gets auth token from login response
     e.preventDefault();
 
     setError(null);
@@ -166,7 +166,6 @@ export default function Home() {
       });
 
       if (response.ok) {
-        // Login successful
         const responseBody=await response.json();
         console.log(responseBody);
       
