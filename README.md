@@ -4,9 +4,6 @@ Use the new GPT-4 api to build a chatGPT chatbot for multiple Large PDF files.
 
 Tech stack used includes LangChain, Pinecone, Typescript, Openai, and Next.js. LangChain is a framework that makes it easier to build scalable AI/LLM apps and chatbots. Pinecone is a vectorstore for storing embeddings and your PDF in text to later retrieve similar docs.
 
-[Tutorial video](https://www.youtube.com/watch?v=ih9PBGVVOO4)
-
-[Get in touch via twitter if you have questions](https://twitter.com/mayowaoshin)
 
 The visual guide of this repo and tutorial is in the `visual guide` folder.
 
