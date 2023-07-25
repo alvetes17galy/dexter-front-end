@@ -37,16 +37,6 @@ PINECONE_ENVIRONMENT=
 PINECONE_INDEX_NAME=
 
 
-## Convert your PDF files to embeddings
-
-**This repo can load multiple PDF files**
-
-1. Inside `docs` folder, add your pdf files or folders that contain pdf files.
-
-2. Run the script `npm run ingest` to 'ingest' and embed your docs. If you run into errors troubleshoot below.
-
-3. Check Pinecone dashboard to verify your namespace and vectors have been added.
-
 ## Run the app
 
 Once you've verified that the embeddings and content have been successfully added to your Pinecone, you can run the app `pnpm run dev` to launch the local dev environment, and then type a question in the chat interface.
