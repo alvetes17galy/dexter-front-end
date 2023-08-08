@@ -21,27 +21,27 @@ import {
 
 
 export default function Home() {
-  
- const [showLoginForm,setShowLoginForm]=useState(true);
+
+  const [showLoginForm, setShowLoginForm] = useState(true);
   const [data, setData] = useState([]);
 
- /* useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/data');
-        const results = await response.json();
-        setData(results);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  /* useEffect(() => {
+     const fetchData = async () => {
+       try {
+         const response = await fetch('/api/data');
+         const results = await response.json();
+         setData(results);
+       } catch (error) {
+         console.error('Error fetching data:', error);
+       }
+     };
+ 
+     fetchData();
+   }, []);*/
 
-    fetchData();
-  }, []);*/
-  
-  const handleLoginFormSubmit=()=>{
+  const handleLoginFormSubmit = () => {
     //Perform Login Actions
-    
+
     setShowLoginForm(false);
   };
   const [query, setQuery] = useState<string>('');
@@ -82,7 +82,7 @@ export default function Home() {
       setFile(file);
     }
   };
-  
+
   const handleSubmitFile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!file) return;
@@ -92,16 +92,16 @@ export default function Home() {
     setTimeout(() => {
       setShowMessage(false);
     }, 3000);
-    
-  
+
+
     const formData = new FormData();
     formData.append("pdf", file);
-  
+
     const response = await fetch("/api/upload", {
       method: "POST",
       body: formData,
     });
-  
+
     if (response.ok) {
       const { url } = await response.json();
       console.log(`Uploaded file to ${url}`);
@@ -109,29 +109,29 @@ export default function Home() {
       console.error(response.statusText);
     }
   };
-  
 
- /*function checkPassword() {
-    const password = prompt('Enter keywords to start using the program:');
-    if (password==null)
-    {
-      setPasswordEntered(false);
-    }
-    else if (password === 'galy'||password==='2023') {
-      setPasswordEntered(true);
-      setPasswordPromptShown(true);
-        } else {
-      alert('Incorrect password. Please try again.');
-    }
-  }
-  useEffect(() => {
-    if (!passwordEntered && !passwordPromptShown) {
-      setPasswordPromptShown(true);
-      checkPassword();
-    }
-  }, [passwordEntered, passwordPromptShown]);*/
-  
-  
+
+  /*function checkPassword() {
+     const password = prompt('Enter keywords to start using the program:');
+     if (password==null)
+     {
+       setPasswordEntered(false);
+     }
+     else if (password === 'galy'||password==='2023') {
+       setPasswordEntered(true);
+       setPasswordPromptShown(true);
+         } else {
+       alert('Incorrect password. Please try again.');
+     }
+   }
+   useEffect(() => {
+     if (!passwordEntered && !passwordPromptShown) {
+       setPasswordPromptShown(true);
+       checkPassword();
+     }
+   }, [passwordEntered, passwordPromptShown]);*/
+
+
   useEffect(() => {
     textAreaRef.current?.focus();
   }, []);
@@ -139,7 +139,7 @@ export default function Home() {
   //handle form submission
   async function handleSubmit(e: any) {
 
-    const token=localStorage.getItem("token"); //Gets auth token from login response
+    const token = localStorage.getItem("token"); //Gets auth token from login response
     e.preventDefault();
 
     setError(null);
@@ -150,9 +150,9 @@ export default function Home() {
     }
 
     const question = query.trim();
-    const user_input=question
-    const model_output="string";
-    const user_feedback=true;
+    const user_input = question
+    const model_output = "string";
+    const user_feedback = true;
 
 
     /*try {
@@ -177,7 +177,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error submitting analytics:", error);
     }*/
- 
+
     setMessageState((state) => ({
       ...state,
       messages: [
@@ -201,7 +201,7 @@ export default function Home() {
       throw new Error('API key not found');
     }*/
     const encodedApiKey = process.env.OPENAI_API_KEY;
-    
+
     try {
       fetchEventSource('/api/chat', {
         method: 'POST',
@@ -265,7 +265,7 @@ export default function Home() {
         e.preventDefault();
       }
     },
-    [handleSubmit,query],
+    [handleSubmit, query],
   );
 
   const chatMessages = useMemo(() => {
@@ -273,12 +273,12 @@ export default function Home() {
       ...messages,
       ...(pending
         ? [
-            {
-              type: 'apiMessage',
-              message: pending,
-              sourceDocs: pendingSourceDocs,
-            },
-          ]
+          {
+            type: 'apiMessage',
+            message: pending,
+            sourceDocs: pendingSourceDocs,
+          },
+        ]
         : []),
     ];
   }, [messages, pending, pendingSourceDocs]);
@@ -292,186 +292,183 @@ export default function Home() {
 
   return (
     <>
-    {!showLoginForm ? (
-      <Layout>
-        <div className="mx-auto flex flex-col gap-4">
-        <form onSubmit={handleSubmitFile}>
-      <input
-        type="file"
-        name="pdf"
-        onChange={handleFileChange}
-        className="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-      />
-      <button type="submit" className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-        Submit
-      </button>
-      {fileSubmitted && showMessage && (
-        <div className="text-green-300 ml-4">PDF ingested</div>
-      )}
-    </form>
-          <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-            Welcome to Dexter  💚❤️🌏🌱🔬
-          </h1>
-         
-          <main className={styles.main}>
-            <div className={styles.cloud}>
-              <div ref={messageListRef} className={styles.messagelist}>
-                {chatMessages.map((message, index) => {
-                  let icon;
-                  let className;
-                  if (message.type === 'apiMessage') {
-                    icon = (
-                      <Image
-                        src="/dexter.png"
-                        alt="AI"
-                        width="40"
-                        height="40"
-                        className={styles.boticon}
-                        priority
-                      />
-                    );
-                    className = styles.apimessage;
-                  } else {
-                    icon = (
-                      <Image
-                        src="/bot-image.png"
-                        alt="Me"
-                        width="30"
-                        height="30"
-                        className={styles.usericon}
-                        priority
-                      />
-                    );
-                    
-                    className =
-                      loading && index === chatMessages.length - 1
-                        ? styles.usermessagewaiting
-                        : styles.usermessage;
-                  }
-                  return (
-                    <>
-                      <div key={`chatMessage-${index}`} className={className}>
-                        {icon}
-                        <div className={styles.markdownanswer}>
-                          <ReactMarkdown linkTarget="_blank">
-                            {message.message}
-                          </ReactMarkdown>
-                        </div>
-                      </div>
-                      {message.sourceDocs && (
-                        <div
-                          className="p-5"
-                          key={`sourceDocsAccordion-${index}`}
-                        >
-                          <Accordion
-                            type="single"
-                            collapsible
-                            className="flex-col"
-                          >
-                            {message.sourceDocs.map((doc, index) => (
-                              <div key={`messageSourceDocs-${index}`}>
-                                <AccordionItem value={`item-${index}`}>
-                                  <AccordionTrigger>
-                                    <h3>Source {index + 1}</h3>
-                                  </AccordionTrigger>
-                                  <AccordionContent>
-                                    <ReactMarkdown linkTarget="_blank">
-                                      {doc.pageContent}
-                                    </ReactMarkdown>
-                                    <p className="mt-2">
-                                      <b>Source:</b> {doc.metadata.source.substring(0)}
-                                    </p>
-                                  </AccordionContent>
-                                </AccordionItem>
-                              </div>
-                            ))}
-                          </Accordion>
-                        </div>
-                      )}
-                    </>
-                  );
-                })}
-                {sourceDocs.length > 0 && (
-                  <div className="p-5">
-                    <Accordion type="single" collapsible className="flex-col">
-                      {sourceDocs.map((doc, index) => (
-                        <div key={`SourceDocs-${index}`}>
-                          <AccordionItem value={`item-${index}`}>
-                            <AccordionTrigger>
-                              <h3>Source {index + 1}</h3>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                              <ReactMarkdown linkTarget="_blank">
-                                {doc.pageContent}
-                              </ReactMarkdown>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </div>
-                      ))}
-                    </Accordion>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className={styles.center}>
-              <div className={styles.cloudform}>
-                <form onSubmit={handleSubmit}>
-                  <textarea
-                    disabled={loading}
-                    onKeyDown={handleEnter}
-                    ref={textAreaRef}
-                    autoFocus={false}
-                    rows={1}
-                    maxLength={512}
-                    id="userInput"
-                    name="userInput"
-                    placeholder={
-                      loading
-                        ? 'Waiting for response...'
-                        : ''
-                    }
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className={styles.textarea}
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className={styles.generatebutton}
-                  >
-                    {loading ? (
-                      <div className={styles.loadingwheel}>
-                        <LoadingDots color="#000" />
-                      </div>
-                    ) : (
-                      // Send icon SVG in input field
-                      <svg
-                        viewBox="0 0 20 20"
-                        className={styles.svgicon}
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                      </svg>
-                    )}
-                  </button>
-                </form>
-              </div>
-            </div>
-            {error && (
-              <div className="border border-red-400 rounded-md p-4">
-                <p className="text-red-500">{error}</p>
-              </div>
-            )}
-          </main>
-        </div>
-        <footer className="m-auto p-4">
-            @Galy 2023.
-        </footer>
+      {!showLoginForm ? (
+        <Layout>
+          <div className="mx-auto flex flex-col gap-4">
+            <form onSubmit={handleSubmitFile}>
+              <input
+                type="file"
+                name="pdf"
+                onChange={handleFileChange}
+                className="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+              <button type="submit" className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                Submit
+              </button>
+              {fileSubmitted && showMessage && (
+                <div className="text-green-300 ml-4">PDF ingested</div>
+              )}
+            </form>
+            <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
+              Welcome to Dexter  💚❤️🌏🌱🔬
+            </h1>
 
-      </Layout>):(<div><LoginForm onSubmit={handleLoginFormSubmit}/></div>)}
+            <main className={styles.main}>
+              <div className={styles.cloud}>
+                <div ref={messageListRef} className={styles.messagelist}>
+                  {chatMessages.map((message, index) => {
+                    let icon;
+                    let className;
+                    if (message.type === 'apiMessage') {
+                      icon = (
+                        <Image
+                          src="/dexter.png"
+                          alt="AI"
+                          width="40"
+                          height="40"
+                          className={styles.boticon}
+                          priority
+                        />
+                      );
+                      className = styles.apimessage;
+                    } else {
+                      icon = (
+                        <Image
+                          src="/bot-image.png"
+                          alt="Me"
+                          width="30"
+                          height="30"
+                          className={styles.usericon}
+                          priority
+                        />
+                      );
+
+                      className =
+                        loading && index === chatMessages.length - 1
+                          ? styles.usermessagewaiting
+                          : styles.usermessage;
+                    }
+                    return (
+                      <>
+                        <div key={`chatMessage-${index}`} className={className}>
+                          {icon}
+                          <div className={styles.markdownanswer}>
+                            <ReactMarkdown linkTarget="_blank">
+                              {message.message}
+                            </ReactMarkdown>
+                          </div>
+                        </div>
+                        {message.sourceDocs && (
+                          <div
+                            className="p-5"
+                            key={`sourceDocsAccordion-${index}`}
+                          >
+                            <Accordion
+                              type="single"
+                              collapsible
+                              className="flex-col"
+                            >
+                              {message.sourceDocs.map((doc, index) => (
+                                <div key={`messageSourceDocs-${index}`}>
+                                  <AccordionItem value={`item-${index}`}>
+                                    <AccordionTrigger>
+                                      <h3>Source {index + 1}</h3>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                      <ReactMarkdown linkTarget="_blank">
+                                        {doc.pageContent}
+                                      </ReactMarkdown>
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                </div>
+                              ))}
+                            </Accordion>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })}
+                  {sourceDocs.length > 0 && (
+                    <div className="p-5">
+                      <Accordion type="single" collapsible className="flex-col">
+                        {sourceDocs.map((doc, index) => (
+                          <div key={`SourceDocs-${index}`}>
+                            <AccordionItem value={`item-${index}`}>
+                              <AccordionTrigger>
+                                <h3>Source {index + 1}</h3>
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                <ReactMarkdown linkTarget="_blank">
+                                  {doc.pageContent}
+                                </ReactMarkdown>
+                              </AccordionContent>
+                            </AccordionItem>
+                          </div>
+                        ))}
+                      </Accordion>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className={styles.center}>
+                <div className={styles.cloudform}>
+                  <form onSubmit={handleSubmit}>
+                    <textarea
+                      disabled={loading}
+                      onKeyDown={handleEnter}
+                      ref={textAreaRef}
+                      autoFocus={false}
+                      rows={1}
+                      maxLength={512}
+                      id="userInput"
+                      name="userInput"
+                      placeholder={
+                        loading
+                          ? 'Waiting for response...'
+                          : ''
+                      }
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      className={styles.textarea}
+                    />
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={styles.generatebutton}
+                    >
+                      {loading ? (
+                        <div className={styles.loadingwheel}>
+                          <LoadingDots color="#000" />
+                        </div>
+                      ) : (
+                        // Send icon SVG in input field
+                        <svg
+                          viewBox="0 0 20 20"
+                          className={styles.svgicon}
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                        </svg>
+                      )}
+                    </button>
+                  </form>
+                </div>
+              </div>
+              {error && (
+                <div className="border border-red-400 rounded-md p-4">
+                  <p className="text-red-500">{error}</p>
+                </div>
+              )}
+            </main>
+          </div>
+          <footer className="m-auto p-4">
+            @Galy 2023.
+          </footer>
+
+        </Layout>) : (<div><LoginForm onSubmit={handleLoginFormSubmit} /></div>)}
     </>
   );
 
-  
+
 }
 
