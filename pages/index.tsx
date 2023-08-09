@@ -364,43 +364,48 @@ export default function Home() {
                         </div>
 
                         {message.sourceDocs && (
-                          <div
-                            className="p-5"
-                            key={`sourceDocsAccordion-${index}`}
-                          >
-                            <Accordion
-                              type="single"
-                              collapsible
-                              className="flex-col"
-                            >
-                              {message.sourceDocs.map((doc, index) => {
-                                console.log('Source Doc:', doc);
-                                return (
-                                  <div key={`messageSourceDocs-${index}`}>
-                                    <AccordionItem value={`item-${index}`}>
-                                      <AccordionTrigger>
-                                        <h3>Source {index + 1}</h3>
-                                      </AccordionTrigger>
-                                      <AccordionContent>
-
-                                        <p className="mt-2">
-                                          <b>APA Citation:</b> {doc.metadata.APA}
-                                        </p>
-                                        <p className="mt-2">
-
-                                          <b>Download PDF:</b> <a href={doc.metadata.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline hover:text-blue-700">{doc.metadata.url}</a>
-
-
-                                        </p>
-                                      </AccordionContent>
-                                    </AccordionItem>
-                                  </div>
+                          <div className="p-5" key={`sourceDocsAccordion-${index}`}>
+                            <Accordion type="single" collapsible className="flex-col">
+                              {message.sourceDocs.reduce((uniqueSources: any[], doc: any) => {
+                                const existingSource = uniqueSources.find(
+                                  (source) => source.metadata.APA === doc.metadata.APA
                                 );
-                              })}
 
+                                if (!existingSource) {
+                                  uniqueSources.push(doc);
+                                }
+
+                                return uniqueSources;
+                              }, []).map((uniqueDoc: any, index: number) => (
+                                <div key={`messageSourceDocs-${index}`}>
+                                  <AccordionItem value={`item-${index}`}>
+                                    <AccordionTrigger>
+                                      <h3>Source {index + 1}</h3>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                      <p className="mt-2">
+                                        <b>APA Citation:</b> {uniqueDoc.metadata.APA}
+                                      </p>
+                                      <p className="mt-2">
+                                        <b>Download PDF:</b>{" "}
+                                        <a
+                                          href={uniqueDoc.metadata.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-blue-500 underline hover:text-blue-700"
+                                        >
+                                          {uniqueDoc.metadata.url}
+                                        </a>
+                                      </p>
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                </div>
+                              ))}
                             </Accordion>
                           </div>
                         )}
+
+
                       </>
                     );
                   })}

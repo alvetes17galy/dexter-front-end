@@ -65,5 +65,6 @@ export const run = async () => {
 
 (async () => {
   await run();
+  //await deleteAllVectors();
   console.log('ingestion complete');
 })();
