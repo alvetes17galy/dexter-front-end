@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { promises as fs } from "fs";
 import path from "path";
 import formidable, { File } from 'formidable';
-import {run} from '../../scripts/ingest-data';
-import {deleteAllVectors} from '../../scripts/ingest-data';
+import { run } from '../../scripts/ingest-data';
+import { deleteAllVectors } from '../../scripts/ingest-data';
 
 /* Don't miss that! */
 export const config = {
@@ -51,12 +51,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         /* Move uploaded files to directory */
-       /* for (const file of files) {
-            const tempPath = file[1].filepath;
-            await fs.rename(tempPath, targetPath + file[1].originalFilename);
-        }*/
+        /* for (const file of files) {
+             const tempPath = file[1].filepath;
+             await fs.rename(tempPath, targetPath + file[1].originalFilename);
+         }*/
 
-         /* Move uploaded files to directory */
+        /* Move uploaded files to directory */
         for (const file of files) {
             const tempPath = file[1].filepath;
             await fs.copyFile(tempPath, targetPath + file[1].originalFilename);
@@ -64,9 +64,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
 
-     await deleteAllVectors();
-     await run();
-       
+
+        await run();
+
     }
 
 

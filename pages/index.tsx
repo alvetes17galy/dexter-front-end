@@ -290,6 +290,7 @@ export default function Home() {
     }
   }, [chatMessages]);
 
+
   return (
     <>
       {!showLoginForm ? (
@@ -317,6 +318,8 @@ export default function Home() {
               <div className={styles.cloud}>
                 <div ref={messageListRef} className={styles.messagelist}>
                   {chatMessages.map((message, index) => {
+                    console.log('Message:', message); // Add this line to log the message content
+
                     let icon;
                     let className;
                     if (message.type === 'apiMessage') {
@@ -355,9 +358,11 @@ export default function Home() {
                           <div className={styles.markdownanswer}>
                             <ReactMarkdown linkTarget="_blank">
                               {message.message}
+
                             </ReactMarkdown>
                           </div>
                         </div>
+
                         {message.sourceDocs && (
                           <div
                             className="p-5"
@@ -368,20 +373,31 @@ export default function Home() {
                               collapsible
                               className="flex-col"
                             >
-                              {message.sourceDocs.map((doc, index) => (
-                                <div key={`messageSourceDocs-${index}`}>
-                                  <AccordionItem value={`item-${index}`}>
-                                    <AccordionTrigger>
-                                      <h3>Source {index + 1}</h3>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                      <ReactMarkdown linkTarget="_blank">
-                                        {doc.pageContent}
-                                      </ReactMarkdown>
-                                    </AccordionContent>
-                                  </AccordionItem>
-                                </div>
-                              ))}
+                              {message.sourceDocs.map((doc, index) => {
+                                console.log('Source Doc:', doc);
+                                return (
+                                  <div key={`messageSourceDocs-${index}`}>
+                                    <AccordionItem value={`item-${index}`}>
+                                      <AccordionTrigger>
+                                        <h3>Source {index + 1}</h3>
+                                      </AccordionTrigger>
+                                      <AccordionContent>
+
+                                        <p className="mt-2">
+                                          <b>APA Citation:</b> {doc.metadata.APA}
+                                        </p>
+                                        <p className="mt-2">
+
+                                          <b>Download PDF:</b> <a href={doc.metadata.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline hover:text-blue-700">{doc.metadata.url}</a>
+
+
+                                        </p>
+                                      </AccordionContent>
+                                    </AccordionItem>
+                                  </div>
+                                );
+                              })}
+
                             </Accordion>
                           </div>
                         )}

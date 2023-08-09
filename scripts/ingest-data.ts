@@ -11,9 +11,9 @@ const filePath = 'docs';
 
 export const deleteAllVectors = async () => {
   try {
-    const index = pinecone.Index(PINECONE_INDEX_NAME); 
+    const index = pinecone.Index(PINECONE_INDEX_NAME);
     console.log("index connected");
-    const namespace="pdf-test"
+    const namespace = "pdf-test"
     // Delete all vectors in the given namespace
     await index.delete1({
       deleteAll: true,
@@ -49,7 +49,7 @@ export const run = async () => {
     console.log('creating vector store...');
     /*create and store the embeddings in the vectorStore*/
     const embeddings = new OpenAIEmbeddings();
-    const index = pinecone.Index(PINECONE_INDEX_NAME); 
+    const index = pinecone.Index(PINECONE_INDEX_NAME);
 
     //embed the PDF documents
     await PineconeStore.fromDocuments(docs, embeddings, {
