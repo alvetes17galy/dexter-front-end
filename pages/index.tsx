@@ -368,7 +368,7 @@ export default function Home() {
                             <Accordion type="single" collapsible className="flex-col">
                               {message.sourceDocs.reduce((uniqueSources: any[], doc: any) => {
                                 const existingSource = uniqueSources.find(
-                                  (source) => source.metadata.APA === doc.metadata.APA
+                                  (source) => source.metadata.APA === doc.metadata.APA || source.metadata.apa === doc.metadata.apa
                                 );
 
                                 if (!existingSource) {
@@ -384,17 +384,17 @@ export default function Home() {
                                     </AccordionTrigger>
                                     <AccordionContent>
                                       <p className="mt-2">
-                                        <b>APA Citation:</b> {uniqueDoc.metadata.APA}
+                                        <b>APA Citation:</b> {uniqueDoc.metadata.APA || uniqueDoc.metadata.apa}
                                       </p>
                                       <p className="mt-2">
                                         <b>Download PDF:</b>{" "}
                                         <a
-                                          href={uniqueDoc.metadata.url}
+                                          href={uniqueDoc.metadata.url || uniqueDoc.metadata.pdf_url}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="text-blue-500 underline hover:text-blue-700"
                                         >
-                                          {uniqueDoc.metadata.url}
+                                          {uniqueDoc.metadata.pdf_url || uniqueDoc.metadata.url}
                                         </a>
                                       </p>
                                     </AccordionContent>

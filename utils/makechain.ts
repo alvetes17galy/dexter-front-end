@@ -17,7 +17,6 @@ const QA_PROMPT = PromptTemplate.fromTemplate(
   That is why they are revolutionizing the way they produce goods today and therefore sparking a much more sustainable form of doing agriculture. 
   Your goal is to provide insightful answers using this context. When addressing technical concepts, ensure elaborate explanations with examples.
 
-
 Question: {question}
 =========
 {context}
@@ -25,6 +24,8 @@ Question: {question}
 Answer in Markdown:`,
 );
 
+/*Include in-text APA citations using the relevant content provided in this prompt.
+  If you don't know the answer, just say that "I don't have enough references to provide this information", don't try to make up an answer. Once you are done ask a question back to the user related to the "{question}" to create engagement and make it in BOLD.*/
 export const makeChain = (
   vectorstore: PineconeStore,
   onTokenStream?: (token: string) => void,
@@ -43,7 +44,6 @@ export const makeChain = (
         ? CallbackManager.fromHandlers({
           async handleLLMNewToken(token) {
             onTokenStream(token);
-            console.log(token);
           },
         })
         : undefined,
@@ -56,6 +56,6 @@ export const makeChain = (
     combineDocumentsChain: docChain,
     questionGeneratorChain: questionGenerator,
     returnSourceDocuments: true,
-    k: 3, //number of source documents to return
+    k: 2, //number of source documents to return
   });
 };
