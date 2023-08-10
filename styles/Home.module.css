@@ -115,6 +115,7 @@
   0% {
     background-position: -100% 0;
   }
+
   100% {
     background-position: 100% 0;
   }
@@ -131,6 +132,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -236,9 +238,11 @@
     width: 22rem;
     height: 28rem;
   }
+
   .textarea {
     width: 22rem;
   }
+
   .topnav {
     border: 1px solid black;
     align-items: center;
@@ -258,5 +262,35 @@
     font-size: 0.7rem;
     width: 100%;
     text-align: center;
+  }
+}
+
+/* Define styles for the "stop generating" button */
+.stopbutton {
+  background-color: #ff0000;
+  /* Red background */
+  color: #fff;
+  /* White text */
+}
+
+/* Define styles for the loading wheel */
+.loadingwheel {
+  display: inline-block;
+  border: 3px solid #ccc;
+  border-top: 3px solid #000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

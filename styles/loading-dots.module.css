@@ -60,10 +60,43 @@
   0% {
     opacity: 0.2;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.2;
+  }
+}
+
+
+/* Define styles for the "stop generating" button */
+.stopbutton {
+  background-color: #ff0000;
+  /* Red background */
+  color: #fff;
+  /* White text */
+}
+
+/* Define styles for the loading wheel */
+.loadingwheel {
+  display: inline-block;
+  border: 3px solid #ccc;
+  border-top: 3px solid #000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
