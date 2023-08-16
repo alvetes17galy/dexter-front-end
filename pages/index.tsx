@@ -93,13 +93,13 @@ export default function Home() {
     }
   };
 
-  let stopGenerating = false;
+  //let stopGenerating = false;
 
-  const handleStopGenerating = () => {
+  /*const handleStopGenerating = () => {
     stopGenerating = true;
     stopGeneratingRef.current = true;
     setLoading(false);
-  };
+  };*/
 
 
   const handleSubmitFile = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -134,7 +134,7 @@ export default function Home() {
   }, []);
 
   //handle form submission
-  function handleSubmit(e: any, stopGenerating: boolean) {
+  function handleSubmit(e: any) {
 
     const token = localStorage.getItem("token"); //Gets auth token from login response
     e.preventDefault();
@@ -181,14 +181,12 @@ export default function Home() {
           question,
           history,
           token,
-          stopGenerating,
 
         }),
         signal: ctrl.signal,
         onmessage: (event) => {
 
           if (event.data === '[DONE]') {
-            stopGenerating = false;
             stopGeneratingRef.current = false;
             setMessageState((state) => ({
               history: [...state.history, [question, state.pending ?? '']],
@@ -210,19 +208,19 @@ export default function Home() {
           } else {
 
             const data = JSON.parse(event.data);
-            if (!stopGenerating) {
-              if (data.sourceDocs) {
-                setMessageState((state) => ({
-                  ...state,
-                  pendingSourceDocs: data.sourceDocs,
-                }));
-              } else {
-                setMessageState((state) => ({
-                  ...state,
-                  pending: (state.pending ?? '') + data.data,
-                }));
-              }
+
+            if (data.sourceDocs) {
+              setMessageState((state) => ({
+                ...state,
+                pendingSourceDocs: data.sourceDocs,
+              }));
+            } else {
+              setMessageState((state) => ({
+                ...state,
+                pending: (state.pending ?? '') + data.data,
+              }));
             }
+
 
           }
         },
@@ -239,7 +237,7 @@ export default function Home() {
   const handleEnter = useCallback(
     (e: any) => {
       if (e.key === 'Enter' && query) {
-        handleSubmit(e, stopGenerating);
+        handleSubmit(e);
       } else if (e.key == 'Enter') {
         e.preventDefault();
       }
@@ -361,7 +359,7 @@ export default function Home() {
         ]
         : []),
     ];
-  }, [messages, pending, pendingSourceDocs, stopGenerating]);
+  }, [messages, pending, pendingSourceDocs]);
 
   //scroll to bottom of chat
   useEffect(() => {
@@ -543,7 +541,7 @@ export default function Home() {
               </div>
               <div className={styles.center}>
                 <div className={styles.cloudform}>
-                  <form onSubmit={(e) => handleSubmit(e, stopGenerating)}>
+                  <form onSubmit={(e) => handleSubmit(e)}>
                     <textarea
                       disabled={loading}
                       onKeyDown={handleEnter}
@@ -582,17 +580,7 @@ export default function Home() {
                         </svg>
                       )}
                     </button>
-                    <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                      {generatingResponse && (
-                        <button
-                          type="button"
-                          onClick={handleStopGenerating}
-                          disabled={!generatingResponse}
-                        // className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                        >
-                        </button>
-                      )}
-                    </div>
+
                   </form>
 
                 </div>

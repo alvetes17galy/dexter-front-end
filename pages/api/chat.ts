@@ -64,7 +64,6 @@ export default async function handler(
 
     console.log("User input is: ", question);
     console.log("Model output is:", model_output);
-    console.log('Stop generating is:', req.body.stopGenerating);
 
 
     try {
