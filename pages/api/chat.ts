@@ -11,7 +11,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { question, history, token, stopGenerating } = req.body;
+  const { question, history, token } = req.body;
 
 
   if (!question) {
