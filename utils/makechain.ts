@@ -29,7 +29,11 @@ Answer in Markdown:`,
 export const makeChain = (
   vectorstore: PineconeStore,
   onTokenStream?: (token: string) => void,
+  stopGenerating: boolean,
 ) => {
+  if (stopGenerating) {
+    return null;
+  }
   const questionGenerator = new LLMChain({
     llm: new OpenAIChat({ temperature: 0.5 }),
     prompt: CONDENSE_PROMPT,
@@ -43,7 +47,9 @@ export const makeChain = (
       callbackManager: onTokenStream
         ? CallbackManager.fromHandlers({
           async handleLLMNewToken(token) {
+
             onTokenStream(token);
+            console.log(token)
           },
         })
         : undefined,

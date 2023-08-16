@@ -14,12 +14,15 @@
     "ingest": "tsx -r dotenv/config scripts/ingest-data.ts"
   },
   "dependencies": {
+    "@fireworks-js/react": "^2.10.7",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@pinecone-database/pinecone": "0.0.12",
     "@radix-ui/react-accordion": "^1.1.1",
     "@types/next": "^9.0.0",
     "clsx": "^1.2.1",
     "dotenv": "^16.0.3",
+    "fireworks-js": "^2.10.7",
+    "fireworks-react": "^1.0.12",
     "formidable": "^2.1.1",
     "langchain": "0.0.55",
     "lucide-react": "^0.125.0",

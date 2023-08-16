@@ -9,6 +9,10 @@ import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { Document } from 'langchain/document';
 import { query } from '../lib/db';
+import PositiveIcon from 'public/positiveIcon.png'
+import NegativeIcon from "public/negativeIcon.png"
+
+
 
 import ReactDOM from 'react-dom'
 import LoginForm from '../components/ui/LoginForm'
@@ -22,9 +26,10 @@ import {
 
 export default function Home() {
 
+  const [generatingResponse, setGeneratingResponse] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(true);
   const [data, setData] = useState([]);
-
+  let userInput;
   /* useEffect(() => {
      const fetchData = async () => {
        try {
@@ -73,7 +78,12 @@ export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [showMessage, setShowMessage] = useState(false);
 
+
+
   const [fileSubmitted, setFileSubmitted] = useState(false);
+
+  const stopGeneratingRef = useRef(false);
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -82,6 +92,15 @@ export default function Home() {
       setFile(file);
     }
   };
+
+  let stopGenerating = false;
+
+  const handleStopGenerating = () => {
+    stopGenerating = true;
+    stopGeneratingRef.current = true;
+    setLoading(false);
+  };
+
 
   const handleSubmitFile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -110,34 +129,12 @@ export default function Home() {
     }
   };
 
-
-  /*function checkPassword() {
-     const password = prompt('Enter keywords to start using the program:');
-     if (password==null)
-     {
-       setPasswordEntered(false);
-     }
-     else if (password === 'galy'||password==='2023') {
-       setPasswordEntered(true);
-       setPasswordPromptShown(true);
-         } else {
-       alert('Incorrect password. Please try again.');
-     }
-   }
-   useEffect(() => {
-     if (!passwordEntered && !passwordPromptShown) {
-       setPasswordPromptShown(true);
-       checkPassword();
-     }
-   }, [passwordEntered, passwordPromptShown]);*/
-
-
   useEffect(() => {
     textAreaRef.current?.focus();
   }, []);
 
   //handle form submission
-  async function handleSubmit(e: any) {
+  function handleSubmit(e: any, stopGenerating: boolean) {
 
     const token = localStorage.getItem("token"); //Gets auth token from login response
     e.preventDefault();
@@ -149,34 +146,9 @@ export default function Home() {
       return;
     }
 
+    setGeneratingResponse(true);
     const question = query.trim();
-    const user_input = question
-    const model_output = "string";
-    const user_feedback = true;
-
-
-    /*try {
-      const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/collect-user-input", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({user_input,model_output,user_feedback}),
-      });
-
-      if (response.ok) {
-        const responseBody=await response.json();
-        console.log(responseBody);
-      
-      } else {
-        // Login failed
-        console.log("Failed to store user data")
-    
-      }
-    } catch (error) {
-      console.error("Error submitting analytics:", error);
-    }*/
+    userInput = question;
 
     setMessageState((state) => ({
       ...state,
@@ -195,11 +167,6 @@ export default function Home() {
     setMessageState((state) => ({ ...state, pending: '' }));
 
     const ctrl = new AbortController();
-    //const apiKey=process.env.OPENAI_API_KEY;
-    //const apiKey = process.env.OPENAI_API_KEY;
-    /*if (!apiKey) {
-      throw new Error('API key not found');
-    }*/
     const encodedApiKey = process.env.OPENAI_API_KEY;
 
     try {
@@ -214,10 +181,15 @@ export default function Home() {
           question,
           history,
           token,
+          stopGenerating,
+
         }),
         signal: ctrl.signal,
         onmessage: (event) => {
+
           if (event.data === '[DONE]') {
+            stopGenerating = false;
+            stopGeneratingRef.current = false;
             setMessageState((state) => ({
               history: [...state.history, [question, state.pending ?? '']],
               messages: [
@@ -233,24 +205,31 @@ export default function Home() {
             }));
             setLoading(false);
             ctrl.abort();
+            setGeneratingResponse(false);
+
           } else {
+
             const data = JSON.parse(event.data);
-            if (data.sourceDocs) {
-              setMessageState((state) => ({
-                ...state,
-                pendingSourceDocs: data.sourceDocs,
-              }));
-            } else {
-              setMessageState((state) => ({
-                ...state,
-                pending: (state.pending ?? '') + data.data,
-              }));
+            if (!stopGenerating) {
+              if (data.sourceDocs) {
+                setMessageState((state) => ({
+                  ...state,
+                  pendingSourceDocs: data.sourceDocs,
+                }));
+              } else {
+                setMessageState((state) => ({
+                  ...state,
+                  pending: (state.pending ?? '') + data.data,
+                }));
+              }
             }
+
           }
         },
       });
     } catch (error) {
       setLoading(false);
+      setGeneratingResponse(false);
       setError('An error occurred while fetching the data. Please try again.');
       console.log('error', error);
     }
@@ -260,13 +239,114 @@ export default function Home() {
   const handleEnter = useCallback(
     (e: any) => {
       if (e.key === 'Enter' && query) {
-        handleSubmit(e);
+        handleSubmit(e, stopGenerating);
       } else if (e.key == 'Enter') {
         e.preventDefault();
       }
     },
     [handleSubmit, query],
   );
+
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
+  const handlePositiveFeedback = async (message: Messages) => {
+    const token = localStorage.getItem("token");
+    try {
+      // Prepare the data to send
+      const feedbackData = {
+        user_feedback: 'positive',
+        model_output: message.message,
+        user_input: ' ',
+      };
+
+      // Make a POST request to the endpoint
+      const response = await fetch('https://dexterv2-16d166718906.herokuapp.com/collect-user-feedback', {
+
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(feedbackData),
+      });
+
+      // Handle the response as needed
+      if (response.ok) {
+        // Mark the feedback as submitted and perform any other actions
+        setFeedbackSubmitted(true);
+      } else {
+        console.log(feedbackData)
+        // Handle error cases
+        console.error('Failed to submit negative feedback');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  }
+
+  interface Messages {
+    type: string;
+    message: string;
+
+  }
+  const handleNegativeFeedback = async (message: Messages) => {
+    const token = localStorage.getItem("token");
+    try {
+      // Prepare the data to send
+      const feedbackData = {
+        user_feedback: 'negative',
+        model_output: message.message,
+        user_input: ' ',
+      };
+
+      // Make a POST request to the endpoint
+      const response = await fetch('https://dexterv2-16d166718906.herokuapp.com/collect-user-feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+
+        },
+        body: JSON.stringify(feedbackData),
+      });
+
+      // Handle the response as needed
+      if (response.ok) {
+
+        setFeedbackSubmitted(true);
+      } else {
+        console.log(feedbackData)
+        // Handle error cases
+        console.error('Failed to submit positive feedback');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
+
+
+  interface FeedbackPopupProps {
+    setFeedbackSubmitted: (value: boolean) => void;
+  }
+
+  const FeedbackPopup: React.FC<FeedbackPopupProps> = ({ setFeedbackSubmitted }) => {
+    return (
+      <div className={styles['feedback-overlay']}>
+        <div className={styles['feedback-popup']}>
+          <div className={styles['feedback-popup-content']}>
+            <span className={styles['feedback-popup-close']} onClick={() => setFeedbackSubmitted(false)}>
+              &times;
+            </span>
+            <p className={styles['feedback-popup-text']}>Thank you for providing valuable feedback!</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
+
 
   const chatMessages = useMemo(() => {
     return [
@@ -281,7 +361,7 @@ export default function Home() {
         ]
         : []),
     ];
-  }, [messages, pending, pendingSourceDocs]);
+  }, [messages, pending, pendingSourceDocs, stopGenerating]);
 
   //scroll to bottom of chat
   useEffect(() => {
@@ -318,7 +398,6 @@ export default function Home() {
               <div className={styles.cloud}>
                 <div ref={messageListRef} className={styles.messagelist}>
                   {chatMessages.map((message, index) => {
-                    console.log('Message:', message); // Add this line to log the message content
 
                     let icon;
                     let className;
@@ -358,10 +437,41 @@ export default function Home() {
                           <div className={styles.markdownanswer}>
                             <ReactMarkdown linkTarget="_blank">
                               {message.message}
-
                             </ReactMarkdown>
+
                           </div>
+
                         </div>
+                        {feedbackSubmitted && message.type === 'apiMessage' && message.sourceDocs && (
+                          <FeedbackPopup setFeedbackSubmitted={setFeedbackSubmitted} />
+                        )}
+                        {message.type === 'apiMessage' && message.sourceDocs && (
+                          <div className={`${styles.feedbackIcons} flex`}>
+                            <button
+                              onClick={() => handlePositiveFeedback(message)}
+                              className={styles.feedbackButton}
+                            >
+                              <img
+                                src="/PositiveIcon.png"
+                                alt="Positive Feedback"
+                                className={`${styles.positiveIcon} mr-2`}
+                              />
+                            </button>
+                            <button
+                              onClick={() => handleNegativeFeedback(message)}
+                              className={styles.feedbackButton}
+                            >
+                              <img
+                                src="/NegativeIcon.png"
+                                alt="Negative Feedback"
+                                className={styles.negativeIcon}
+                              />
+                            </button>
+                          </div>
+
+                        )}
+
+
 
                         {message.sourceDocs && (
                           <div className="p-5" key={`sourceDocsAccordion-${index}`}>
@@ -403,8 +513,8 @@ export default function Home() {
                               ))}
                             </Accordion>
                           </div>
-                        )}
 
+                        )}
 
                       </>
                     );
@@ -433,7 +543,7 @@ export default function Home() {
               </div>
               <div className={styles.center}>
                 <div className={styles.cloudform}>
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={(e) => handleSubmit(e, stopGenerating)}>
                     <textarea
                       disabled={loading}
                       onKeyDown={handleEnter}
@@ -462,7 +572,7 @@ export default function Home() {
                           <LoadingDots color="#000" />
                         </div>
                       ) : (
-                        // Send icon SVG in input field
+
                         <svg
                           viewBox="0 0 20 20"
                           className={styles.svgicon}
@@ -472,7 +582,19 @@ export default function Home() {
                         </svg>
                       )}
                     </button>
+                    <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                      {generatingResponse && (
+                        <button
+                          type="button"
+                          onClick={handleStopGenerating}
+                          disabled={!generatingResponse}
+                        // className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                        >
+                        </button>
+                      )}
+                    </div>
                   </form>
+
                 </div>
               </div>
               {error && (
@@ -487,9 +609,11 @@ export default function Home() {
           </footer>
 
         </Layout>) : (<div><LoginForm onSubmit={handleLoginFormSubmit} /></div>)}
+
     </>
   );
 
-
+  ;
 }
+
 
