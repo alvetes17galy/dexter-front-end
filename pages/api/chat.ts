@@ -45,56 +45,51 @@ export default async function handler(
   //create chain
 
   const chain = makeChain(vectorStore, (token: string) => {
-    if (!stopGenerating) {
-      console.log("i'm here", token)
-      sendData(JSON.stringify({ data: token }));
-
-    }
-
+    sendData(JSON.stringify({ data: token }));
   });
 
 
   try {
-    if (!stopGenerating) {
-      // Ask a question
-      const response = await chain.call({
-        question: sanitizedQuestion,
-        chat_history: history || [],
+
+    // Ask a question
+    const response = await chain.call({
+      question: sanitizedQuestion,
+      chat_history: history || [],
+    });
+
+    // Process the response and send user data
+    const user_input = question;
+    const model_output = response.text;
+    const user_feedback = 'NA';
+
+    console.log("User input is: ", question);
+    console.log("Model output is:", model_output);
+    console.log('Stop generating is:', req.body.stopGenerating);
+
+
+    try {
+      const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/collect-user-input", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ user_input, model_output, user_feedback }),
       });
 
-      // Process the response and send user data
-      const user_input = question;
-      const model_output = response.text;
-      const user_feedback = 'NA';
-
-      console.log("User input is: ", question);
-      console.log("Model output is:", model_output);
-      console.log('Stop generating is:', req.body.stopGenerating);
-
-
-      try {
-        const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/collect-user-input", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ user_input, model_output, user_feedback }),
-        });
-
-        if (response.ok) {
-          const responseBody = await response.json();
-          console.log(responseBody);
-        } else {
-          console.log("Failed to store user data");
-        }
-      } catch (error) {
-        console.error("Error submitting analytics:", error);
+      if (response.ok) {
+        const responseBody = await response.json();
+        console.log(responseBody);
+      } else {
+        console.log("Failed to store user data");
       }
-
-      // Send source documents back to the client
-      sendData(JSON.stringify({ sourceDocs: response.sourceDocuments }));
+    } catch (error) {
+      console.error("Error submitting analytics:", error);
     }
+
+    // Send source documents back to the client
+    sendData(JSON.stringify({ sourceDocs: response.sourceDocuments }));
+
   } catch (error) {
     console.log('error', error);
   } finally {
