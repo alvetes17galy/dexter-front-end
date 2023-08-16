@@ -50,7 +50,6 @@ export default async function handler(
 
 
   try {
-
     // Ask a question
     const response = await chain.call({
       question: sanitizedQuestion,
@@ -92,10 +91,10 @@ export default async function handler(
   } catch (error) {
     console.log('error', error);
   } finally {
-    if (!stopGenerating) {
-      sendData('[DONE]');
 
-    }
+    sendData('[DONE]');
+
+
     res.end();
   }
 
