@@ -449,9 +449,11 @@ export default function Home() {
                               onClick={() => handlePositiveFeedback(message)}
                               className={styles.feedbackButton}
                             >
-                              <img
-                                src="/PositiveIcon.png"
+                              <Image
+                                src="/positiveIcon.png"
                                 alt="Positive Feedback"
+                                width="30"
+                                height="30"
                                 className={`${styles.positiveIcon} mr-2`}
                               />
                             </button>
@@ -459,9 +461,11 @@ export default function Home() {
                               onClick={() => handleNegativeFeedback(message)}
                               className={styles.feedbackButton}
                             >
-                              <img
-                                src="/NegativeIcon.png"
+                              <Image
+                                src="/negativeIcon.png"
                                 alt="Negative Feedback"
+                                width="30"
+                                height="30"
                                 className={styles.negativeIcon}
                               />
                             </button>
