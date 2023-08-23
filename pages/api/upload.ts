@@ -6,7 +6,7 @@ import formidable, { File } from 'formidable';
 import { run } from '../../scripts/ingest-data';
 import { deleteAllVectors } from '../../scripts/ingest-data';
 
-/* Don't miss that! */
+
 export const config = {
     api: {
         bodyParser: false,
@@ -16,6 +16,8 @@ export const config = {
 type ProcessedFiles = Array<[string, File]>;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+
+
 
     let status = 200,
         resultBody = { status: 'ok', message: 'Files were uploaded successfully' };
@@ -50,11 +52,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             await fs.mkdir(targetPath);
         }
 
-        /* Move uploaded files to directory */
-        /* for (const file of files) {
-             const tempPath = file[1].filepath;
-             await fs.rename(tempPath, targetPath + file[1].originalFilename);
-         }*/
 
         /* Move uploaded files to directory */
         for (const file of files) {
@@ -63,9 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             await fs.rm(tempPath);
         }
 
-
-
-        await run();
+        console.log(req.body);
 
     }
 

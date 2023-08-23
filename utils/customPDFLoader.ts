@@ -68,8 +68,9 @@ import { readFile } from 'fs/promises';
 import { BaseDocumentLoader } from 'langchain/document_loaders';
 
 export abstract class BufferLoader extends BaseDocumentLoader {
-  constructor(public filePathOrBlob: string | Blob) {
+  constructor(public filePathOrBlob: string | Blob, public apaCitation: string) {
     super();
+    console.log('CustomPDFLoader - Constructor - apaCitation:', apaCitation);
   }
 
   protected abstract parse(
@@ -82,12 +83,12 @@ export abstract class BufferLoader extends BaseDocumentLoader {
     let metadata: Record<string, string>;
     if (typeof this.filePathOrBlob === 'string') {
       buffer = await readFile(this.filePathOrBlob);
-      metadata = { source: this.filePathOrBlob };
+      metadata = { APA: this.apaCitation, pdf_url: "not available-paper uploaded manually" };
     } else {
       buffer = await this.filePathOrBlob
         .arrayBuffer()
         .then((ab) => Buffer.from(ab));
-      metadata = { source: 'blob', blobType: this.filePathOrBlob.type };
+      metadata = { APA: 'blob', blobType: this.filePathOrBlob.type, pdf_url: "NA-This paper has been uploaded manually" };
     }
     return this.parse(buffer, metadata);
   }
@@ -106,6 +107,8 @@ export class CustomPDFLoader extends BufferLoader {
         metadata: {
           ...metadata,
           pdf_numpages: parsed.numpages,
+          pdf_url: "not available-paper uploaded manually",
+
         },
       }),
     ];

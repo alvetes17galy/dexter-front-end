@@ -1,7 +1,8 @@
 
 //Login and register forms
 import React, { useState } from "react";
-
+import companyLogo from '../../public/bot-image.png';
+import Image from 'next/image';
 interface LoginFormProps {
   onSubmit: () => void;
 }
@@ -12,7 +13,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(true);
-  const [emailError, setEmailError]=useState(false);
+  const [emailError, setEmailError] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
 
@@ -32,7 +33,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     try {
       const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/login", {
         method: "POST",
@@ -45,9 +46,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
       if (response.ok) {
         // Login successful
-        const responseBody=await response.json();
-        const token=responseBody.access_token
-        localStorage.setItem("token",token);
+        const responseBody = await response.json();
+        const token = responseBody.access_token
+        localStorage.setItem("token", token);
         setLoginError(false);
         onSubmit();
         // Redirect to the desired page or perform other actions
@@ -62,11 +63,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
   const handleRegisterSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!email.endsWith('@galy.co')){
+    if (!email.endsWith('@galy.co')) {
       setEmailError(true);
       return;
     }
-    
+
     try {
       const response = await fetch("https://dexterv2-16d166718906.herokuapp.com/register", {
         method: "POST",
@@ -78,13 +79,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       });
 
       if (response.ok) {
-        
-      
-          // Set isRegistered to true when registration is successful
+
+
+        // Set isRegistered to true when registration is successful
         setEmailError(false); // Reset emailError if it was previously set
-    
+
         onSubmit();
-      window.location.reload();
+        window.location.reload();
       } else {
         // Login failed
         setLoginError(true);
@@ -108,17 +109,26 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
   return (
     <div>
+      <div className="relative top-5  h-20 w-30">
+        <Image
+          src='/bot-image.png'
+          alt="Company Logo"
+          layout="fill"
+          objectFit="contain"
+        />
+      </div>
       {showLoginForm ? (
+
         <div className="login-form">
-          <h2>Dexter Login</h2>
+          <h2 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">Dexter Login</h2><br></br>
           {loginError && (
-            <div className="error-message">
+            <div className="error-message ">
               Incorrect credentials. Try again or contact the admin center.
             </div>
           )}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="email">Email:</label>
+              <label htmlFor="email" className="text-1xl  leading-[1.1] tracking-tighter">Email:</label>
               <input
                 type="email"
                 id="email"
@@ -127,8 +137,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                 required
               />
             </div>
+
             <div className="form-group">
-              <label htmlFor="password">Password:</label>
+              <label htmlFor="password" className="text-1xl  leading-[1.1] tracking-tighter">Password:</label>
               <input
                 type="password"
                 id="password"
@@ -137,26 +148,28 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                 required
               />
             </div>
-            <button className="login-button" type="submit">
+            <br></br>
+            <button className="login-button text-1xl font-bold leading-[1.1] tracking-tighter" type="submit" >
               Login
             </button>
           </form>
           <br />
-          <button className="switch-button-login" onClick={handleSwitchToRegister}>
+
+          <button className="switch-button-login text-1xl  leading-[1.1] tracking-tighter" onClick={handleSwitchToRegister}>
             Do not have an account yet?
           </button>
         </div>
       ) : (
         <div className="register-form">
-          <h2>Dexter Registration</h2>
+          <h2 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">Dexter Registration</h2><br></br>
           {emailError && (
-        <div className="error-message">
-          Please include a valid @galy.co email.
-        </div>
-      )}
+            <div className="error-message">
+              Please include a valid @galy.co email.
+            </div>
+          )}
           <form onSubmit={handleRegisterSubmit}>
             <div className="form-group">
-              <label className="register-label" htmlFor="email">
+              <label className="register-label text-1xl  leading-[1.1] tracking-tighter " htmlFor="email">
                 Username:
               </label>
               <input
@@ -168,7 +181,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
               />
             </div>
             <div className="form-group">
-              <label className="register-label" htmlFor="email">
+              <label className="register-label  text-1xl leading-[1.1] tracking-tighter" htmlFor="email">
                 Email:
               </label>
               <input
@@ -180,7 +193,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
               />
             </div>
             <div className="form-group">
-              <label className="register-label" htmlFor="password">
+              <label className="register-label  text-1xl  leading-[1.1] tracking-tighter" htmlFor="password">
                 Password:
               </label>
               <input
@@ -191,18 +204,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                 required
               />
             </div>
-            <button className="register-button" type="submit">
+            <br></br>
+            <button className="register-button  text-1xl font-bold leading-[1.1] tracking-tighter" type="submit">
               Register
             </button>
           </form>
           <br />
-          <button className="switch-button" onClick={handleSwitchToLogin}>
+          <button className="switch-button  text-1xl  leading-[1.1] tracking-tighter" onClick={handleSwitchToLogin}>
             Back to login
           </button>
-        
-          <p className="register-note">*Note: you will be redirected to the login page once you register.</p>
+
+          <p className="register-note  text-1xl leading-[1.1] tracking-tighter">*Note: you will be redirected to the login page once you register.</p>
         </div>
-        
+
       )}
     </div>
   );

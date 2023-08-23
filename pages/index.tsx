@@ -8,9 +8,12 @@ import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { Document } from 'langchain/document';
-import { query } from '../lib/db';
-import PositiveIcon from 'public/positiveIcon.png'
-import NegativeIcon from "public/negativeIcon.png"
+import { useRouter } from 'next/router';
+// index.tsx
+// Adjust the path accordingly
+
+// ...rest of your code that uses tiktoken
+
 
 
 
@@ -22,6 +25,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { run } from '@/scripts/ingest-data';
 
 
 export default function Home() {
@@ -30,19 +34,6 @@ export default function Home() {
   const [showLoginForm, setShowLoginForm] = useState(true);
   const [data, setData] = useState([]);
   let userInput;
-  /* useEffect(() => {
-     const fetchData = async () => {
-       try {
-         const response = await fetch('/api/data');
-         const results = await response.json();
-         setData(results);
-       } catch (error) {
-         console.error('Error fetching data:', error);
-       }
-     };
- 
-     fetchData();
-   }, []);*/
 
   const handleLoginFormSubmit = () => {
     //Perform Login Actions
@@ -73,10 +64,11 @@ export default function Home() {
 
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const [passwordEntered, setPasswordEntered] = useState<boolean>(false);
-  const [passwordPromptShown, setPasswordPromptShown] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [showMessage, setShowMessage] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [apaCitation, setApaCitation] = useState('')
+
 
 
 
@@ -84,6 +76,13 @@ export default function Home() {
 
   const stopGeneratingRef = useRef(false);
 
+  const handlePopupToggle = () => {
+    setShowPopup(!showPopup);
+  };
+
+  const handleApaCitationChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setApaCitation(event.target.value);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -106,10 +105,12 @@ export default function Home() {
     event.preventDefault();
     if (!file) return;
 
+    console.log("Im here")
     setFileSubmitted(true);
     setShowMessage(true);
     setTimeout(() => {
       setShowMessage(false);
+      setShowPopup(false);
     }, 3000);
 
 
@@ -187,6 +188,7 @@ export default function Home() {
         onmessage: (event) => {
 
           if (event.data === '[DONE]') {
+            console.log(messages);
             stopGeneratingRef.current = false;
             setMessageState((state) => ({
               history: [...state.history, [question, state.pending ?? '']],
@@ -231,6 +233,7 @@ export default function Home() {
       setError('An error occurred while fetching the data. Please try again.');
       console.log('error', error);
     }
+
   }
 
   //prevent empty submissions
@@ -369,25 +372,167 @@ export default function Home() {
   }, [chatMessages]);
 
 
+  interface PopupProps {
+    show: boolean;
+    onClose: () => void;
+    onApaCitationChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    apa: string;
+
+  }
+
+
+
+  function Popup({ show, onClose, onApaCitationChange, apa }: PopupProps) {
+    const [selectedPdfName, setSelectedPdfName] = useState("");
+    const [file, setFile] = useState<File | null>(null);
+    const [apaCitation, setApaCitation] = useState("");
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+
+
+    const handleSubmitFile = async (event: React.FormEvent<HTMLFormElement>) => {
+
+      event.preventDefault();
+
+      if (!file) return;
+
+      setIsLoading(true);
+
+
+      const formData = new FormData();
+      formData.append("pdf", file);
+      formData.append("apaCitation", apaCitation);
+      console.log(apaCitation);
+
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+
+
+        // Submit the APA citation to the APA citation submission API route
+        const apaResponse = await fetch('/api/submit-apa', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ apaCitation }),
+        });
+
+        if (apaResponse.ok) {
+          console.log('APA citation submitted successfully.');
+        } else {
+          console.error('Failed to submit APA citation:', await apaResponse.text());
+        }
+
+        setFile(null);
+        setSelectedPdfName('');
+        setApaCitation('');
+
+
+
+        setIsLoading(false); // Reset loading state
+
+        setShowPopup(false);
+
+      } else {
+        console.error('File upload failed:', response.statusText);
+        setIsLoading(false);
+      }
+
+    };
+
+    useEffect(() => {
+      textAreaRef.current?.focus();
+    }, []);
+
+
+    const handleApaCitationChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+      setApaCitation(event.target.value);
+    };
+
+    const handlePdfFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      if (files && files.length > 0) {
+        const file = files[0];
+        setSelectedPdfName(file.name);
+        setFile(file);
+      }
+    };
+
+    useEffect(() => {
+      // Focus on the textarea when the popup is shown
+      if (show && textAreaRef.current) {
+        textAreaRef.current.focus();
+      }
+    }, [show]);
+
+    if (!show) {
+      return null;
+    }
+
+    return (
+      <div className={styles.popup}>
+        <div className={styles.popupContent}>
+          <h2 className={styles.popupTitle}>Document Manual Upload</h2>
+
+
+          <form onSubmit={handleSubmitFile}>
+            <div className={styles.apaCitationContainer}>
+              <textarea
+                value={apaCitation}
+                onChange={handleApaCitationChange}
+                placeholder="Enter citation..."
+                className={styles.apaCitationStyle}
+                required
+              />
+            </div>
+            <div className={styles.uploadFileContainer}>
+
+              <div className={styles.uploadFileSquare}>
+                {selectedPdfName || <img src="/pdfIcon.png" alt="PDF icon" className={styles.pdfIcon} />}
+
+              </div>
+              <input
+                type="file"
+                name="pdf"
+                accept=".pdf"
+                onChange={handlePdfFileChange} // Call the handler when file is selected
+                className={styles.uploadFileInput}
+                required
+              />
+            </div>
+            <button type="submit" className={styles.submitButton} disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'Submit'}
+            </button>
+            <button onClick={onClose} className={styles.popupClose}>
+              &times;
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       {!showLoginForm ? (
         <Layout>
           <div className="mx-auto flex flex-col gap-4">
-            <form onSubmit={handleSubmitFile}>
-              <input
-                type="file"
-                name="pdf"
-                onChange={handleFileChange}
-                className="appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-              <button type="submit" className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                Submit
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePopupToggle}
+                className={`${styles.popupButton} ${styles.pdfButton} border rounded px-2 flex items-center gap-2`}
+              >
+                {/* PDF icon */}
+                <img src="/pdfIcon.png" alt="PDF icon" className={styles.pdfIconButton} />
+                <span className="text-sm text-gray-500">Upload a PDF</span>
               </button>
-              {fileSubmitted && showMessage && (
-                <div className="text-green-300 ml-4">PDF ingested</div>
-              )}
-            </form>
+            </div>
+            <br></br>
             <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
               Welcome to Dexter  💚❤️🌏🌱🔬
             </h1>
@@ -601,6 +746,13 @@ export default function Home() {
           </footer>
 
         </Layout>) : (<div><LoginForm onSubmit={handleLoginFormSubmit} /></div>)}
+      <Popup
+        show={showPopup}
+        onClose={handlePopupToggle}
+        onApaCitationChange={handleApaCitationChange}
+        apa={apaCitation}
+
+      />
 
     </>
   );

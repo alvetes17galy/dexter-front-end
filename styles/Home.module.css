@@ -49,7 +49,7 @@
   position: absolute;
   top: 0.87rem;
   right: 1rem;
-  color: rgb(165, 162, 162);
+  color: #ff0000;
   background: none;
   padding: 0.3rem;
   border: none;
@@ -374,4 +374,196 @@
   cursor: pointer;
   font-size: 20px;
   color: red;
+}
+
+.fixedAccordion {
+  width: 200px;
+}
+
+
+
+
+
+.my-custom-select-style {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: white;
+  color: #26334b;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.my-custom-select-style:hover {
+  border-color: #cbd5e0;
+}
+
+.my-custom-select-style:focus {
+  outline: none;
+  border-color: #1a1b1b;
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+}
+
+
+
+
+/*Handle file popup*/
+
+/* popupStyles.module.css */
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupContent {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(236, 12, 12, 0.712);
+  text-align: center;
+  width: 600px;
+
+  padding: 20px;
+  position: relative;
+
+}
+
+.popupClose {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: red;
+}
+
+.myCustomSelectStyle {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: white;
+  color: #26334b;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.myCustomSelectStyle:hover {
+  border-color: #cbd5e0;
+}
+
+.myCustomSelectStyle:focus {
+  outline: none;
+  border-color: #1a1b1b;
+  box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+}
+
+
+.apaCitationContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.apaCitationStyle {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  color: #26334b;
+  width: 80%;
+  resize: none;
+  margin-top: 5%;
+  box-shadow: 0 4px 8px rgba(99, 179, 237, 0.3);
+}
+
+.uploadFileContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5%;
+}
+
+.uploadFileSquare {
+  width: 60%;
+  height: 60px;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20%;
+}
+
+.pdfIcon {
+  width: 35px;
+  height: 40px;
+}
+
+.uploadFileInput {
+  display: inline-block;
+  opacity: 0;
+  position: absolute;
+  width: 60%;
+  height: 60px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.submitButton {
+  margin-top: 20px;
+  padding: 0.5rem 1rem;
+  background-color: #f3131ec7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: #131414;
+}
+
+
+.popupButton {
+  position: absolute;
+  top: 90px;
+  left: 13%;
+  cursor: pointer;
+  font-size: 20px;
+  border: none;
+  background-color: transparent;
+}
+
+.pdfButton {
+  border-top-right-radius: 50%;
+  /* Make it a circle */
+}
+
+.pdfIconButton {
+  display: block;
+  width: 35px;
+  /* Adjust size as needed */
+  height: 40px;
+  /* Adjust size as needed */
+
+}
+
+.popupTitle {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  /* Adjust color as needed */
+}
+
+.uploadStatus {
+  text-align: center;
+  color: blue;
+  margin-top: 10px;
+  /* Add margin for spacing */
 }
