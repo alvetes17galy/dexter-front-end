@@ -132,7 +132,7 @@ const PapersPage = () => {
                     </h3>
                     <br />
                     <p className="text-1xl leading-[1.1] font-bold tracking-tighter text-center text-red-500">Development issues as of {`[${currentTime}]`}</p>
-                    <p className="text-1xl leading-[1.1] tracking-tighter text-center text-red-500"> We are engaged in refining data filtration capabilities, and certain 'filtering' functionalities might still be under development. We apologize for any inconvenience this may cause</p>
+                    <p className="text-1xl leading-[1.1] tracking-tighter text-center text-red-500"> We are engaged in refining data filtration capabilities, and certain filtering functionalities might still be under development. We apologize for any inconvenience this may cause</p>
                     <div className="flex items-center mb-4">
                         <select
                             value={selectedKeyword || ''}
