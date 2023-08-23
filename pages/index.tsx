@@ -527,7 +527,7 @@ export default function Home() {
                 onClick={handlePopupToggle}
                 className={`${styles.popupButton} ${styles.pdfButton} border rounded px-2 flex items-center gap-2`}
               >
-                {/* PDF icon */}
+
                 <img src="/pdfIcon.png" alt="PDF icon" className={styles.pdfIconButton} />
                 <span className="text-sm text-gray-500">Upload a PDF</span>
               </button>
