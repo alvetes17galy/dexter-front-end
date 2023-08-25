@@ -523,23 +523,32 @@ export default function Home() {
   return (
     <>
       <div className={styles.fullscreenoverlay}>
-        <img src="/dexter.png" alt="Logo" className={styles.logo} />
+
         <div className={styles.overlaycontent}>
-
           <p className={styles.developmentmessage}>
-            Sorry, we are under development as of [{new Date().toLocaleTimeString('en-US', {
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true
-            })} {new Date().toLocaleDateString('en-US', {
-              month: 'numeric',
-              day: 'numeric',
-              year: 'numeric'
-            })}
-            ]</p>
+            Sorry, we are under development as of<b>{' '}
+              {new Date().toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+              })}{' '}
+              {new Date().toLocaleDateString('en-US', {
+                month: 'numeric',
+                day: 'numeric',
+                year: 'numeric'
+              })}</b>
+            . Thank you for your patience.
+            <br />
+            <br /> <img src="/dexter.png" alt="Logo" className={styles.logo} />
+            Bests,
+            <br />
+            <b> Dexter</b>
 
+          </p>
         </div>
       </div>
+
+
     </>
   );
 
