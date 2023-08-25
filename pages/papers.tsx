@@ -55,7 +55,7 @@ const PapersPage = () => {
     const [keywords, setKeywords] = useState<Keyword[]>([]);
 
     useEffect(() => {
-        fetch('http://dexter.eastus.cloudapp.azure.com/client-api/api/v1/keywords', {
+        fetch('https://dexter.eastus.cloudapp.azure.com/client-api/api/v1/keywords', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const PapersPage = () => {
 
 
     useEffect(() => {
-        fetch('http://dexter.eastus.cloudapp.azure.com/client-api/api/v1/count', {
+        fetch('https://dexter.eastus.cloudapp.azure.com/client-api/api/v1/count', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const PapersPage = () => {
 
     useEffect(() => {
         const offset = (currentPage - 1) * papersPerPage;
-        let url = `http://dexter.eastus.cloudapp.azure.com/client-api/api/v1/papers?offset=${offset}&limit=${papersPerPage}`;
+        let url = `https://dexter.eastus.cloudapp.azure.com/client-api/api/v1/papers?offset=${offset}&limit=${papersPerPage}`;
 
         if (selectedKeyword) {
             url += `&keyword=${encodeURIComponent(selectedKeyword)}`;
