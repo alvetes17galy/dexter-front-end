@@ -175,7 +175,7 @@ const PapersPage = () => {
                                     <p className="mt-2">
                                         <b>Category: </b> {paper.keyword}
                                     </p>
-                                    <p className="mt-2">
+                                    {/* <p className="mt-2">
                                         <b>URL:</b>{" "}
                                         <a
                                             href={paper.webpage_url}
@@ -185,7 +185,7 @@ const PapersPage = () => {
                                         >
                                             {paper.webpage_url}
                                         </a>
-                                    </p>
+                        </p>*/}
                                     <p className="mt-2">
                                         <b>Download PDF:</b>{" "}
                                         <a
