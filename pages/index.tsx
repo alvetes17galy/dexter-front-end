@@ -519,247 +519,279 @@ export default function Home() {
       </div>
     );
   }
+
   return (
     <>
-      {!showLoginForm ? (
-        <Layout>
-          <div className="mx-auto flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handlePopupToggle}
-                className={`${styles.popupButton} ${styles.pdfButton} border rounded px-2 flex items-center gap-2`}
-              >
+      <div className={styles.fullscreenoverlay}>
+        <img src="/dexter.png" alt="Logo" className={styles.logo} />
+        <div className={styles.overlaycontent}>
 
-                <img src="/pdfIcon.png" alt="PDF icon" className={styles.pdfIconButton} />
-                <span className="text-sm text-gray-500">Upload a PDF</span>
-              </button>
-            </div>
-            <br></br>
-            <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-              Welcome to Dexter  💚❤️🌏🌱🔬
-            </h1>
+          <p className={styles.developmentmessage}>
+            Sorry, we are under development as of [{new Date().toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+            })} {new Date().toLocaleDateString('en-US', {
+              month: 'numeric',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+            ]</p>
 
-            <main className={styles.main}>
-              <div className={styles.cloud}>
-                <div ref={messageListRef} className={styles.messagelist}>
-                  {chatMessages.map((message, index) => {
-
-                    let icon;
-                    let className;
-                    if (message.type === 'apiMessage') {
-                      icon = (
-                        <Image
-                          src="/dexter.png"
-                          alt="AI"
-                          width="40"
-                          height="40"
-                          className={styles.boticon}
-                          priority
-                        />
-                      );
-                      className = styles.apimessage;
-                    } else {
-                      icon = (
-                        <Image
-                          src="/bot-image.png"
-                          alt="Me"
-                          width="30"
-                          height="30"
-                          className={styles.usericon}
-                          priority
-                        />
-                      );
-
-                      className =
-                        loading && index === chatMessages.length - 1
-                          ? styles.usermessagewaiting
-                          : styles.usermessage;
-                    }
-                    return (
-                      <>
-                        <div key={`chatMessage-${index}`} className={className}>
-                          {icon}
-                          <div className={styles.markdownanswer}>
-                            <ReactMarkdown linkTarget="_blank">
-                              {message.message}
-                            </ReactMarkdown>
-
-                          </div>
-
-                        </div>
-                        {feedbackSubmitted && message.type === 'apiMessage' && message.sourceDocs && (
-                          <FeedbackPopup setFeedbackSubmitted={setFeedbackSubmitted} />
-                        )}
-                        {message.type === 'apiMessage' && message.sourceDocs && (
-                          <div className={`${styles.feedbackIcons} flex`}>
-                            <button
-                              onClick={() => handlePositiveFeedback(message)}
-                              className={styles.feedbackButton}
-                            >
-                              <Image
-                                src="/positiveIcon.png"
-                                alt="Positive Feedback"
-                                width="30"
-                                height="30"
-                                className={`${styles.positiveIcon} mr-2`}
-                              />
-                            </button>
-                            <button
-                              onClick={() => handleNegativeFeedback(message)}
-                              className={styles.feedbackButton}
-                            >
-                              <Image
-                                src="/negativeIcon.png"
-                                alt="Negative Feedback"
-                                width="30"
-                                height="30"
-                                className={styles.negativeIcon}
-                              />
-                            </button>
-                          </div>
-
-                        )}
-
-
-
-                        {message.sourceDocs && (
-                          <div className="p-5" key={`sourceDocsAccordion-${index}`}>
-                            <Accordion type="single" collapsible className="flex-col">
-                              {message.sourceDocs.reduce((uniqueSources: any[], doc: any) => {
-                                const existingSource = uniqueSources.find(
-                                  (source) => source.metadata.APA === doc.metadata.APA || source.metadata.apa === doc.metadata.apa
-                                );
-
-                                if (!existingSource) {
-                                  uniqueSources.push(doc);
-                                }
-
-                                return uniqueSources;
-                              }, []).map((uniqueDoc: any, index: number) => (
-                                <div key={`messageSourceDocs-${index}`}>
-                                  <AccordionItem value={`item-${index}`}>
-                                    <AccordionTrigger>
-                                      <h3>Source {index + 1}</h3>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                      <p className="mt-2">
-                                        <b>APA Citation:</b> {uniqueDoc.metadata.APA || uniqueDoc.metadata.apa}
-                                      </p>
-                                      <p className="mt-2">
-                                        <b>Download PDF:</b>{" "}
-                                        <a
-                                          href={uniqueDoc.metadata.url || uniqueDoc.metadata.pdf_url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-blue-500 underline hover:text-blue-700"
-                                        >
-                                          {uniqueDoc.metadata.pdf_url || uniqueDoc.metadata.url}
-                                        </a>
-                                      </p>
-                                    </AccordionContent>
-                                  </AccordionItem>
-                                </div>
-                              ))}
-                            </Accordion>
-                          </div>
-
-                        )}
-
-                      </>
-                    );
-                  })}
-                  {sourceDocs.length > 0 && (
-                    <div className="p-5">
-                      <Accordion type="single" collapsible className="flex-col">
-                        {sourceDocs.map((doc, index) => (
-                          <div key={`SourceDocs-${index}`}>
-                            <AccordionItem value={`item-${index}`}>
-                              <AccordionTrigger>
-                                <h3>Source {index + 1}</h3>
-                              </AccordionTrigger>
-                              <AccordionContent>
-                                <ReactMarkdown linkTarget="_blank">
-                                  {doc.pageContent}
-                                </ReactMarkdown>
-                              </AccordionContent>
-                            </AccordionItem>
-                          </div>
-                        ))}
-                      </Accordion>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className={styles.center}>
-                <div className={styles.cloudform}>
-                  <form onSubmit={(e) => handleSubmit(e)}>
-                    <textarea
-                      disabled={loading}
-                      onKeyDown={handleEnter}
-                      ref={textAreaRef}
-                      autoFocus={false}
-                      rows={1}
-                      maxLength={512}
-                      id="userInput"
-                      name="userInput"
-                      placeholder={
-                        loading
-                          ? 'Waiting for response...'
-                          : ''
-                      }
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      className={styles.textarea}
-                    />
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className={styles.generatebutton}
-                    >
-                      {loading ? (
-                        <div className={styles.loadingwheel}>
-                          <LoadingDots color="#000" />
-                        </div>
-                      ) : (
-
-                        <svg
-                          viewBox="0 0 20 20"
-                          className={styles.svgicon}
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                        </svg>
-                      )}
-                    </button>
-
-                  </form>
-
-                </div>
-              </div>
-              {error && (
-                <div className="border border-red-400 rounded-md p-4">
-                  <p className="text-red-500">{error}</p>
-                </div>
-              )}
-            </main>
-          </div>
-          <footer className="m-auto p-4">
-            @Galy 2023.
-          </footer>
-
-        </Layout>) : (<div><LoginForm onSubmit={handleLoginFormSubmit} /></div>)}
-      <Popup
-        show={showPopup}
-        onClose={handlePopupToggle}
-        onApaCitationChange={handleApaCitationChange}
-        apa={apaCitation}
-
-      />
-
+        </div>
+      </div>
     </>
   );
 
-  ;
 }
+
+
+
+
+
+/*return (
+  <>
+  
+    {!showLoginForm ? (
+      <Layout>
+        <div className="mx-auto flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePopupToggle}
+              className={`${styles.popupButton} ${styles.pdfButton} border rounded px-2 flex items-center gap-2`}
+            >
+
+              <img src="/pdfIcon.png" alt="PDF icon" className={styles.pdfIconButton} />
+              <span className="text-sm text-gray-500">Upload a PDF</span>
+            </button>
+          </div>
+          <br></br>
+          <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
+            Welcome to Dexter  💚❤️🌏🌱🔬
+          </h1>
+
+          <main className={styles.main}>
+            <div className={styles.cloud}>
+              <div ref={messageListRef} className={styles.messagelist}>
+                {chatMessages.map((message, index) => {
+
+                  let icon;
+                  let className;
+                  if (message.type === 'apiMessage') {
+                    icon = (
+                      <Image
+                        src="/dexter.png"
+                        alt="AI"
+                        width="40"
+                        height="40"
+                        className={styles.boticon}
+                        priority
+                      />
+                    );
+                    className = styles.apimessage;
+                  } else {
+                    icon = (
+                      <Image
+                        src="/bot-image.png"
+                        alt="Me"
+                        width="30"
+                        height="30"
+                        className={styles.usericon}
+                        priority
+                      />
+                    );
+
+                    className =
+                      loading && index === chatMessages.length - 1
+                        ? styles.usermessagewaiting
+                        : styles.usermessage;
+                  }
+                  return (
+                    <>
+                      <div key={`chatMessage-${index}`} className={className}>
+                        {icon}
+                        <div className={styles.markdownanswer}>
+                          <ReactMarkdown linkTarget="_blank">
+                            {message.message}
+                          </ReactMarkdown>
+
+                        </div>
+
+                      </div>
+                      {feedbackSubmitted && message.type === 'apiMessage' && message.sourceDocs && (
+                        <FeedbackPopup setFeedbackSubmitted={setFeedbackSubmitted} />
+                      )}
+                      {message.type === 'apiMessage' && message.sourceDocs && (
+                        <div className={`${styles.feedbackIcons} flex`}>
+                          <button
+                            onClick={() => handlePositiveFeedback(message)}
+                            className={styles.feedbackButton}
+                          >
+                            <Image
+                              src="/positiveIcon.png"
+                              alt="Positive Feedback"
+                              width="30"
+                              height="30"
+                              className={`${styles.positiveIcon} mr-2`}
+                            />
+                          </button>
+                          <button
+                            onClick={() => handleNegativeFeedback(message)}
+                            className={styles.feedbackButton}
+                          >
+                            <Image
+                              src="/negativeIcon.png"
+                              alt="Negative Feedback"
+                              width="30"
+                              height="30"
+                              className={styles.negativeIcon}
+                            />
+                          </button>
+                        </div>
+
+                      )}
+
+
+
+                      {message.sourceDocs && (
+                        <div className="p-5" key={`sourceDocsAccordion-${index}`}>
+                          <Accordion type="single" collapsible className="flex-col">
+                            {message.sourceDocs.reduce((uniqueSources: any[], doc: any) => {
+                              const existingSource = uniqueSources.find(
+                                (source) => source.metadata.APA === doc.metadata.APA || source.metadata.apa === doc.metadata.apa
+                              );
+
+
+                              if (!existingSource) {
+                                uniqueSources.push(doc);
+                              }
+
+                              return uniqueSources;
+                            }, []).map((uniqueDoc: any, index: number) => (
+                              <div key={`messageSourceDocs-${index}`}>
+                                <AccordionItem value={`item-${index}`}>
+                                  <AccordionTrigger>
+                                    <h3>Source {index + 1}</h3>
+                                  </AccordionTrigger>
+                                  <AccordionContent>
+                                    <p className="mt-2">
+                                      <b>APA Citation:</b> {uniqueDoc.metadata.APA || uniqueDoc.metadata.apa}
+                                    </p>
+                                    <p className="mt-2">
+                                      <b>Download PDF:</b>{" "}
+                                      <a
+                                        href={uniqueDoc.metadata.url || uniqueDoc.metadata.pdf_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 underline hover:text-blue-700"
+                                      >
+                                        {uniqueDoc.metadata.pdf_url || uniqueDoc.metadata.url}
+                                      </a>
+                                    </p>
+                                  </AccordionContent>
+                                </AccordionItem>
+                              </div>
+                            ))}
+                          </Accordion>
+                        </div>
+
+                      )}
+
+                    </>
+                  );
+                })}
+                {sourceDocs.length > 0 && (
+                  <div className="p-5">
+                    <Accordion type="single" collapsible className="flex-col">
+                      {sourceDocs.map((doc, index) => (
+                        <div key={`SourceDocs-${index}`}>
+                          <AccordionItem value={`item-${index}`}>
+                            <AccordionTrigger>
+                              <h3>Source {index + 1}</h3>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <ReactMarkdown linkTarget="_blank">
+                                {doc.pageContent}
+                              </ReactMarkdown>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </div>
+                      ))}
+                    </Accordion>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className={styles.center}>
+              <div className={styles.cloudform}>
+                <form onSubmit={(e) => handleSubmit(e)}>
+                  <textarea
+                    disabled={loading}
+                    onKeyDown={handleEnter}
+                    ref={textAreaRef}
+                    autoFocus={false}
+                    rows={1}
+                    maxLength={512}
+                    id="userInput"
+                    name="userInput"
+                    placeholder={
+                      loading
+                        ? 'Waiting for response...'
+                        : ''
+                    }
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className={styles.textarea}
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className={styles.generatebutton}
+                  >
+                    {loading ? (
+                      <div className={styles.loadingwheel}>
+                        <LoadingDots color="#000" />
+                      </div>
+                    ) : (
+
+                      <svg
+                        viewBox="0 0 20 20"
+                        className={styles.svgicon}
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                      </svg>
+                    )}
+                  </button>
+
+                </form>
+
+              </div>
+            </div>
+            {error && (
+              <div className="border border-red-400 rounded-md p-4">
+                <p className="text-red-500">{error}</p>
+              </div>
+            )}
+          </main>
+        </div>
+        <footer className="m-auto p-4">
+          @Galy 2023.
+        </footer>
+
+      </Layout>) : (<div><LoginForm onSubmit={handleLoginFormSubmit} /></div>)}
+    <Popup
+      show={showPopup}
+      onClose={handlePopupToggle}
+      onApaCitationChange={handleApaCitationChange}
+      apa={apaCitation}
+
+    />
+
+  </>
+);
+
+
+}*/
 
 
