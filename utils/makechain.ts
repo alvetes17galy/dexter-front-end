@@ -34,12 +34,12 @@ export const makeChain = (
 ) => {
 
   const questionGenerator = new LLMChain({
-    llm: new OpenAIChat({ temperature: 0.5 }),
+    llm: new OpenAIChat({ temperature: 0.0 }),
     prompt: CONDENSE_PROMPT,
   });
   const docChain = loadQAChain(
     new OpenAIChat({
-      temperature: 0.5,
+      temperature: 0.0,
       modelName: 'gpt-4',
 
       streaming: Boolean(onTokenStream),
