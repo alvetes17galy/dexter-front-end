@@ -55,7 +55,7 @@ const PapersPage = () => {
     const [keywords, setKeywords] = useState<Keyword[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:4002/api/v1/keywords', {
+        fetch('http://dexter.eastus.cloudapp.azure.com/client-api/api/v1/keywords', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const PapersPage = () => {
 
 
     useEffect(() => {
-        fetch('http://localhost:4002/api/v1/count', {
+        fetch('http://dexter.eastus.cloudapp.azure.com/client-api/api/v1/count', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -87,8 +87,16 @@ const PapersPage = () => {
 
     useEffect(() => {
         const offset = (currentPage - 1) * papersPerPage;
-        const url = `http://localhost:4002/api/v1/papers?offset=${offset}&limit=${papersPerPage}`;
+        let url = `http://dexter.eastus.cloudapp.azure.com/client-api/api/v1/papers?offset=${offset}&limit=${papersPerPage}`;
 
+        if (selectedKeyword) {
+            url += `&keyword=${encodeURIComponent(selectedKeyword)}`;
+        }
+
+        if (searchQuery) {
+            url += `&title=${encodeURIComponent(searchQuery)}`;
+        }
+        //console.log(url)
         fetch(url, {
             method: 'GET',
             headers: {
@@ -97,11 +105,11 @@ const PapersPage = () => {
         })
             .then(response => response.json())
             .then((data: FetchedData) => {
-                console.log(data);
+                // console.log(data);
                 setPapers(data.records);
             })
             .catch(error => console.error('Error fetching papers:', error));
-    }, [currentPage, totalRecords]);
+    }, [currentPage, totalRecords, selectedKeyword, searchQuery]);
 
 
     const filteredPapers = papers.filter((paper) =>

@@ -188,7 +188,7 @@ export default function Home() {
         onmessage: (event) => {
 
           if (event.data === '[DONE]') {
-            console.log(messages);
+
             stopGeneratingRef.current = false;
             setMessageState((state) => ({
               history: [...state.history, [question, state.pending ?? '']],
@@ -211,7 +211,9 @@ export default function Home() {
 
             const data = JSON.parse(event.data);
 
+
             if (data.sourceDocs) {
+              console.log(data)
               setMessageState((state) => ({
                 ...state,
                 pendingSourceDocs: data.sourceDocs,

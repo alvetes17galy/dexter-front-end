@@ -83,6 +83,6 @@ export const run = async (apaCitation: string) => {
 
 (async () => {
   //await run();
-  //await deleteAllVectors();
+  // await deleteAllVectors();
   console.log('ingestion complete');
 })();
