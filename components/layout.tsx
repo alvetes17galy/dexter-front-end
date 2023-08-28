@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
               Home
             </a>
             <a
-              href="library"
+              href="#"
               className="hover:text-slate-600 cursor-pointer ml-4" // Add margin here
               onClick={redirectToPapers} // Call the redirection function
             >
