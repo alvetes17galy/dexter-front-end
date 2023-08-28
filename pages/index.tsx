@@ -663,47 +663,46 @@ export default function Home() {
 
 
                         {message.sourceDocs && (
-                          <div className="p-5" key={`sourceDocsAccordion-${index}`}>
-                            <Accordion type="single" collapsible className="flex-col">
-                              {message.sourceDocs.reduce((uniqueSources: any[], doc: any) => {
-                                const existingSource = uniqueSources.find(
-                                  (source) => source.metadata.APA === doc.metadata.APA || source.metadata.apa === doc.metadata.apa
-                                );
+                          <div className="p-5">
+                            {message.sourceDocs.reduce((uniqueSources: any[], doc: any) => {
+                              const existingSourceIndex = uniqueSources.findIndex(
+                                (source) =>
+                                  source.metadata.apa === doc.metadata.apa
+                              );
 
+                              if (existingSourceIndex === -1) {
+                                uniqueSources.push(doc);
+                              }
 
-                                if (!existingSource) {
-                                  uniqueSources.push(doc);
-                                }
-
-                                return uniqueSources;
-                              }, []).map((uniqueDoc: any, index: number) => (
-                                <div key={`messageSourceDocs-${index}`}>
+                              return uniqueSources; //returning unique documents
+                            }, []).map((uniqueDoc: any, index: number) => (
+                              <div key={`messageSourceDocs-${index}`} className="mb-4">
+                                <Accordion type="single" collapsible className="flex-col">
                                   <AccordionItem value={`item-${index}`}>
                                     <AccordionTrigger>
                                       <h3>Source {index + 1}</h3>
                                     </AccordionTrigger>
                                     <AccordionContent>
                                       <p className="mt-2">
-                                        <b>APA Citation:</b> {uniqueDoc.metadata.APA || uniqueDoc.metadata.apa}
+                                        <b>APA Citation:</b> {uniqueDoc.metadata.apa}
                                       </p>
                                       <p className="mt-2">
                                         <b>Download PDF:</b>{" "}
                                         <a
-                                          href={uniqueDoc.metadata.url || uniqueDoc.metadata.pdf_url}
+                                          href={uniqueDoc.metadata.pdf_url}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="text-blue-500 underline hover:text-blue-700"
                                         >
-                                          {uniqueDoc.metadata.pdf_url || uniqueDoc.metadata.url}
+                                          {uniqueDoc.metadata.pdf_url}
                                         </a>
                                       </p>
                                     </AccordionContent>
                                   </AccordionItem>
-                                </div>
-                              ))}
-                            </Accordion>
+                                </Accordion>
+                              </div>
+                            ))}
                           </div>
-
                         )}
 
                       </>
