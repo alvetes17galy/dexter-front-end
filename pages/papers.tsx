@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import styles from '@/styles/Home.module.css';
 import moment from 'moment';
@@ -94,9 +92,9 @@ const PapersPage = () => {
         }
 
         if (searchQuery) {
-            url += `&title=${encodeURIComponent(searchQuery)}`;
+            url += `&paper_name=${encodeURIComponent(searchQuery)}`;
         }
-        //console.log(url)
+        console.log(url)
         fetch(url, {
             method: 'GET',
             headers: {
@@ -120,7 +118,7 @@ const PapersPage = () => {
 
     const indexOfLastPaper = currentPage * papersPerPage;
     const indexOfFirstPaper = indexOfLastPaper - papersPerPage;
-    const currentPapers = filteredPapers.slice(indexOfFirstPaper, indexOfLastPaper);
+    //const currentPapers = filteredPapers.slice(indexOfFirstPaper, indexOfLastPaper);
 
 
     const paginate = (pageNumber: number) => {
@@ -139,8 +137,8 @@ const PapersPage = () => {
                         and all of them are available for you...
                     </h3>
                     <br />
-                    <p className="text-1xl leading-[1.1] font-bold tracking-tighter text-center text-red-500">Development issues as of {`[${currentTime}]`}</p>
-                    <p className="text-1xl leading-[1.1] tracking-tighter text-center text-red-500"> We are engaged in refining data filtration capabilities, and certain filtering functionalities might still be under development. We apologize for any inconvenience this may cause</p>
+                    {/*<p className="text-1xl leading-[1.1] font-bold tracking-tighter text-center text-red-500">Development issues as of {`[${currentTime}]`}</p>
+                    <p className="text-1xl leading-[1.1] tracking-tighter text-center text-red-500"> We are engaged in refining data filtration capabilities, and certain filtering functionalities might still be under development. We apologize for any inconvenience this may cause</p>*/}
                     <div className="flex items-center mb-4">
                         <select
                             value={selectedKeyword || ''}

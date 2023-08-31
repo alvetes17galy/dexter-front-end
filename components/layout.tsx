@@ -23,13 +23,13 @@ export default function Layout({ children }: LayoutProps) {
             >
               Home
             </a>
-            {/*<a
+            <a
               href="#"
-              className="hover:text-slate-600 cursor-pointer ml-4" // Add margin here
+              className="hover:text-slate-600 cursor-pointer ml-4"
               onClick={redirectToPapers} // Call the redirection function
             >
               Library
-  </a>*/}
+            </a>
           </nav>
         </div>
       </header>
