@@ -200,37 +200,38 @@ const PapersPage = () => {
                             </AccordionItem>
                         ))}
                     </Accordion>
-                    <div className="flex justify-center mt-4">
-                        {Array.from({ length: Math.ceil(totalRecords / papersPerPage) }).map((_, index) => {
-                            const pageNumber = index + 1;
-                            if (
-                                pageNumber === 1 ||  // Always show the first page button
-                                pageNumber === currentPage ||  // Show the current page button
-                                pageNumber === currentPage - 1 ||  // Show the page before the current page
-                                pageNumber === currentPage + 1 ||  // Show the page after the current page
-                                pageNumber === Math.ceil(totalRecords / papersPerPage)  // Always show the last page button
-                            ) {
-                                return (
-                                    <button
-                                        key={index}
-                                        className={`mx-1 px-3 py-1 rounded ${currentPage === pageNumber ? 'bg-red-500 text-white' : 'bg-gray-200'
-                                            }`}
-                                        onClick={() => paginate(pageNumber)}
-                                        disabled={currentPage === pageNumber}
-                                    >
-                                        {pageNumber}
-                                    </button>
-                                );
-                            } else if (
-                                pageNumber === currentPage - 2 ||  // Show three dots when there's a gap before the current page
-                                pageNumber === currentPage + 2     // Show three dots when there's a gap after the current page
-                            ) {
-                                return <span key={index} className="mx-1">...</span>;
-                            }
-                            return null;
-                        })}
-                    </div>
-
+                    {!selectedKeyword && (
+                        <div className="flex justify-center mt-4">
+                            {Array.from({ length: Math.ceil(totalRecords / papersPerPage) }).map((_, index) => {
+                                const pageNumber = index + 1;
+                                if (
+                                    pageNumber === 1 ||  // Always show the first page button
+                                    pageNumber === currentPage ||  // Show the current page button
+                                    pageNumber === currentPage - 1 ||  // Show the page before the current page
+                                    pageNumber === currentPage + 1 ||  // Show the page after the current page
+                                    pageNumber === Math.ceil(totalRecords / papersPerPage)  // Always show the last page button
+                                ) {
+                                    return (
+                                        <button
+                                            key={index}
+                                            className={`mx-1 px-3 py-1 rounded ${currentPage === pageNumber ? 'bg-red-500 text-white' : 'bg-gray-200'
+                                                }`}
+                                            onClick={() => paginate(pageNumber)}
+                                            disabled={currentPage === pageNumber}
+                                        >
+                                            {pageNumber}
+                                        </button>
+                                    );
+                                } else if (
+                                    pageNumber === currentPage - 2 ||  // Show three dots when there's a gap before the current page
+                                    pageNumber === currentPage + 2     // Show three dots when there's a gap after the current page
+                                ) {
+                                    return <span key={index} className="mx-1">...</span>;
+                                }
+                                return null;
+                            })}
+                        </div>
+                    )}
                 </div>
             </div>
         </Layout>
