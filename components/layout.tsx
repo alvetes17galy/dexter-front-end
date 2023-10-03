@@ -12,6 +12,11 @@ export default function Layout({ children }: LayoutProps) {
     router.push('/papers'); // Redirect to the /papers route
   };
 
+  const redirectToKeywords = () => {
+    router.push('/keywords'); // Redirect to the /papers route
+  };
+
+
   return (
     <div className="mx-auto flex flex-col space-y-4">
       <header className="container sticky top-0 z-40 bg-white">
@@ -30,6 +35,7 @@ export default function Layout({ children }: LayoutProps) {
             >
               Library
             </a>
+
           </nav>
         </div>
       </header>

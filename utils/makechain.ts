@@ -40,14 +40,14 @@ export const makeChain = (
   const docChain = loadQAChain(
     new OpenAIChat({
       temperature: 0.0,
-      modelName: 'gpt-4',
+      modelName: 'gpt-3.5-turbo',
 
       streaming: Boolean(onTokenStream),
       callbackManager: onTokenStream
         ? CallbackManager.fromHandlers({
           async handleLLMNewToken(token) {
             onTokenStream(token);
-            console.log(token);
+            //console.log(token);
 
           },
         })

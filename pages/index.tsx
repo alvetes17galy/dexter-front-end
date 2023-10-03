@@ -9,13 +9,6 @@ import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { Document } from 'langchain/document';
 import { useRouter } from 'next/router';
-// index.tsx
-// Adjust the path accordingly
-
-// ...rest of your code that uses tiktoken
-
-
-
 
 import ReactDOM from 'react-dom'
 import LoginForm from '../components/ui/LoginForm'
@@ -68,9 +61,6 @@ export default function Home() {
   const [showMessage, setShowMessage] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [apaCitation, setApaCitation] = useState('')
-
-
-
 
   const [fileSubmitted, setFileSubmitted] = useState(false);
 
@@ -554,10 +544,6 @@ export default function Home() {
  
  }*/
 
-
-
-
-
   return (
     <>
 
@@ -667,7 +653,7 @@ export default function Home() {
                             {message.sourceDocs.reduce((uniqueSources: any[], doc: any) => {
                               const existingSourceIndex = uniqueSources.findIndex(
                                 (source) =>
-                                  source.metadata.apa === doc.metadata.apa
+                                  source.apa === doc.apa
                               );
 
                               if (existingSourceIndex === -1) {
@@ -684,17 +670,19 @@ export default function Home() {
                                     </AccordionTrigger>
                                     <AccordionContent>
                                       <p className="mt-2">
-                                        <b>APA Citation:</b> {uniqueDoc.metadata.apa}
+                                        <b>APA Citation:</b> {uniqueDoc.apa}
                                       </p>
+
+
                                       <p className="mt-2">
                                         <b>Download PDF:</b>{" "}
                                         <a
-                                          href={uniqueDoc.metadata.pdf_url}
+                                          href={uniqueDoc.pdf_url}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="text-blue-500 underline hover:text-blue-700"
                                         >
-                                          {uniqueDoc.metadata.pdf_url}
+                                          {uniqueDoc.pdf_url}
                                         </a>
                                       </p>
                                     </AccordionContent>

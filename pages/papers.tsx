@@ -24,6 +24,7 @@ interface Paper {
     webpage_url: string;
     keyword: string;
     paper_pdf: string;
+    abstract: String;
 
 
 
@@ -61,11 +62,13 @@ const PapersPage = () => {
         })
             .then(response => response.json())
             .then((data: { records: Keyword[] }) => {
-                console.log(data);
-                setKeywords(data.records);
+                const sortedKeywords = data.records.sort((a, b) => a.keyword.localeCompare(b.keyword));
+                console.log(sortedKeywords);
+                setKeywords(sortedKeywords);
             })
             .catch(error => console.error('Error fetching keywords:', error));
     }, []);
+
 
 
     useEffect(() => {
@@ -103,7 +106,7 @@ const PapersPage = () => {
         })
             .then(response => response.json())
             .then((data: FetchedData) => {
-                // console.log(data);
+                console.log(data);
                 setPapers(data.records);
             })
             .catch(error => console.error('Error fetching papers:', error));
@@ -168,38 +171,48 @@ const PapersPage = () => {
                     <Accordion type="single">
                         {papers.map((paper) => (
                             <AccordionItem key={paper.paper_id} value={`item-${paper.paper_id}`}>
-                                <AccordionTrigger >{paper.title} &nbsp;&nbsp;&nbsp;</AccordionTrigger>
+                                <AccordionTrigger>{paper.title} &nbsp;&nbsp;&nbsp;</AccordionTrigger>
                                 <AccordionContent>
                                     <p className="mt-2">
                                         <b>Category: </b> {paper.keyword}
                                     </p>
-                                    {/* <p className="mt-2">
-                                        <b>URL:</b>{" "}
-                                        <a
-                                            href={paper.webpage_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 underline hover:text-blue-700"
-                                        >
-                                            {paper.webpage_url}
-                                        </a>
-                        </p>*/}
-                                    <p className="mt-2">
-                                        <b>Download PDF:</b>{" "}
-                                        <a
-                                            href={paper.paper_pdf}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 underline hover:text-blue-700"
-                                        >
-                                            {paper.paper_pdf}
-                                        </a>
-                                    </p>
-
+                                    {paper.paper_pdf ? (
+                                        // Display PDF link if paper_pdf is not null
+                                        <p className="mt-2">
+                                            <b>Download PDF:</b>{" "}
+                                            <a
+                                                href={paper.paper_pdf}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 underline hover:text-blue-700"
+                                            >
+                                                {paper.paper_pdf}
+                                            </a>
+                                        </p>
+                                    ) : (
+                                        // Display abstract and webpage_url if paper_pdf is null
+                                        <>
+                                            <p className="mt-2">
+                                                <b>Abstract:</b> {paper.abstract}
+                                            </p>
+                                            <p className="mt-2">
+                                                <b>URL:</b>{" "}
+                                                <a
+                                                    href={paper.webpage_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-500 underline hover:text-blue-700"
+                                                >
+                                                    {paper.webpage_url}
+                                                </a>
+                                            </p>
+                                        </>
+                                    )}
                                 </AccordionContent>
                             </AccordionItem>
                         ))}
                     </Accordion>
+
                     {!selectedKeyword && (
                         <div className="flex justify-center mt-4">
                             {Array.from({ length: Math.ceil(totalRecords / papersPerPage) }).map((_, index) => {
