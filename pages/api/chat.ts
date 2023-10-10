@@ -36,7 +36,7 @@ export default async function handler(
     if (response.ok) {
       const responseBody = await response.json();
       sourceDocs = responseBody.sources
-      answer = responseBody.answer
+      answer = responseBody.data
       console.log(responseBody);
     } else {
       console.log("Failed to call llama");
