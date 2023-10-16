@@ -1049,7 +1049,69 @@ export default function Home() {
   }
 
  
+return (
+ 
+      <>
+ 
+        <div className={styles.fullscreenoverlay}>
+ 
+  
+ 
+          <div className={styles.overlaycontent}>
+ 
+            <p className={styles.developmentmessage}>
+ 
+              Sorry, we are under development as of<b>{' '}
+ 
+                {new Date().toLocaleTimeString('en-US', {
+ 
+                  hour: 'numeric',
+ 
+                  minute: 'numeric',
+ 
+                  hour12: true
+ 
+                })}{' '}
+ 
+                {new Date().toLocaleDateString('en-US', {
+ 
+                  month: 'numeric',
+ 
+                  day: 'numeric',
+ 
+                  year: 'numeric'
+ 
+                })}</b>
+ 
+              . Thank you for your patience.
+ 
+              <br />
+ 
+              <br /> <img src="/dexter.png" alt="Logo" className={styles.logo} />
+ 
+              Bests,
+ 
+              <br />
+ 
+              <b> Dexter</b>
+ 
+  
+ 
+            </p>
+ 
+          </div>
+ 
+        </div>
+ 
+  
+ 
+  
+ 
+      </>
+ 
+    );
 
+    
   /* return (
 
      <>
@@ -1118,7 +1180,7 @@ export default function Home() {
 
  
 
-  return (
+  /*return (
 
     <>
 
@@ -1244,7 +1306,7 @@ export default function Home() {
 
       <React.Fragment key={i}>
 
-        {i > 0 && <p></p>} {/* Add a <p> element after the first line */}
+        {i > 0 && <p></p>} 
 
         {line}
 
@@ -1616,7 +1678,7 @@ export default function Home() {
 
     </>
 
-  );
+  ); */
 
  
 
