@@ -52,13 +52,13 @@ export default async function handler(
 
  
 
-    if (requestInProgress) {
+    /*if (requestInProgress) {
 
       console.log('A request is already in progress. Please wait.');
 
       return;
 
-    }
+    }*/
 
  
 
@@ -69,6 +69,7 @@ export default async function handler(
     const body = {
 
       question: sanitizedQuestion,
+      history:history,
 
       config: {
 

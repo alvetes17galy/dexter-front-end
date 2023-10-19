@@ -1049,7 +1049,7 @@ export default function Home() {
   }
 
  
-return (
+/*return (
  
       <>
  
@@ -1109,7 +1109,7 @@ return (
  
       </>
  
-    );
+    );*/
 
     
   /* return (
@@ -1180,7 +1180,7 @@ return (
 
  
 
-  /*return (
+  return (
 
     <>
 
@@ -1678,7 +1678,7 @@ return (
 
     </>
 
-  ); */
+  ); 
 
  
 
