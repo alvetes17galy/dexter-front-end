@@ -12,10 +12,6 @@ import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@/config/pinecone';
 
  
 
-let requestInProgress = false;
-
- 
-
 export default async function handler(
 
   req: NextApiRequest,
@@ -25,6 +21,8 @@ export default async function handler(
 ) {
 
   const { question, history, token } = req.body;
+
+  console.log("\n\nNew request ############################################ IN PROGRESS \n\n")
 
   console.log("history is:", history)
 
@@ -52,23 +50,10 @@ export default async function handler(
 
  
 
-    /*if (requestInProgress) {
-
-      console.log('A request is already in progress. Please wait.');
-
-      return;
-
-    }*/
-
- 
-
-    requestInProgress = true;
-
- 
-
     const body = {
 
       question: sanitizedQuestion,
+
       history:history,
 
       config: {
@@ -81,11 +66,9 @@ export default async function handler(
 
  
 
-   
-
     const response = await fetch(
 
-      "https://dexter.eastus.cloudapp.azure.com/dexter/dexter",
+      "https://dexter.eastus.cloudapp.azure.com/dexter/galy",
 
       {
 
@@ -141,7 +124,11 @@ export default async function handler(
 
         let isLastEvent = false; // Initialize the flag
 
-        let jsonData
+        let jsonData=''
+
+        let sourcesData=null
+
+ 
 
         while (true) {
 
@@ -149,11 +136,9 @@ export default async function handler(
 
           if (done) {
 
-            // If it's the last event, set the flag to true
+ 
 
             isLastEvent = true;
-
-            // Don't send the "done" event here
 
             break;
 
@@ -161,53 +146,41 @@ export default async function handler(
 
           const text = new TextDecoder().decode(value);
 
-         // console.log("text is:",text)
+          jsonData+=text;
 
-          // Split the NDJSON data into lines
+ 
 
-          const lines = text.split('\n');
+          while (jsonData.includes('\n')) {
 
-   
+            const lineIndex = jsonData.indexOf('\n');
 
-          for (const line of lines) {
+            const line = jsonData.slice(0, lineIndex).trim();
 
-            if (line.trim() === '') continue; // Skip empty lines
+            jsonData = jsonData.slice(lineIndex + 1);
 
    
 
             try {
 
- 
-
               if (line.trim() !== '' && line.startsWith('{')) {
 
-                jsonData = JSON.parse(line);
+                const lineData = JSON.parse(line);
 
-           
+                if (lineData.data) {
 
-                if (jsonData.data) {
-
-                  const data = JSON.stringify(jsonData.data).replace(/^"(.*)"$/, '$1');
+                  const data = JSON.stringify(lineData.data).replace(/^"(.*)"$/, '$1');
 
                   sendData(JSON.stringify({ data: data }));
 
-                  answer += data;
+                  answer+=data
+
+                } else if (lineData.sources) {
+
+                  sourcesData = lineData.sources;
 
                 }
 
-           
-
-                console.log(jsonData.is_last_event);
-
-                console.log(jsonData.sources);
-
               }
-
-             
-
- 
-
-       
 
             } catch (error) {
 
@@ -217,23 +190,27 @@ export default async function handler(
 
           }
 
-        }
-
    
 
-        // Send the "done" event if it's the last event
+          if (sourcesData) {
+
+            sourceDocs=sourcesData
+
+            console.log("The sources data are:",sourcesData);
+
+ 
+
+            sourcesData = null;
+
+          }
+
+        }
+
+       
 
         if (isLastEvent) {
 
-          console.log(jsonData.sources)
-
-          sourceDocs=jsonData.sources
-
-         
-
           isLastEvent=true;
-
-          requestInProgress = false;
 
           console.log("DONE");
 
@@ -263,7 +240,7 @@ export default async function handler(
 
   }
 
-  requestInProgress = false;
+ 
 
   if (!question) {
 
@@ -275,36 +252,6 @@ export default async function handler(
 
  
 
- 
-
- 
-
- 
-
-  /* create vectorstore*/
-
-  /* const vectorStore = await PineconeStore.fromExistingIndex(
-
-     new OpenAIEmbeddings({}),
-
-     {
-
-       pineconeIndex: index,
-
-       textKey: 'text',
-
-       namespace: PINECONE_NAME_SPACE,
-
-     },
-
-   );*/
-
- 
-
- 
-
- 
-
   const sendData = (data: string) => {
 
     res.write(`data: ${data}\n\n`);
@@ -313,51 +260,7 @@ export default async function handler(
 
  
 
- 
-
-  //sendData(JSON.stringify({ data: '' }));
-
- 
-
-  //create chain
-
- 
-
-  /* const chain = makeChain(vectorStore, (token: string) => {
-
-     //sendData(JSON.stringify({ data: token }));
-
-   });*/
-
- 
-
- 
-
   try {
-
-    // Ask a question
-
-    /*const response = await chain.call({
-
-      question: sanitizedQuestion,
-
-      chat_history: history || [],
-
-    });*/
-
- 
-
-    // Process the response and send user data
-
- 
-
- 
-
-    // console.log("User input is: ", question);
-
-    //console.log(response.sourceDocuments);
-
- 
 
  
 
@@ -411,9 +314,7 @@ export default async function handler(
 
  
 
-    // Send source documents back to the client
-
-   sendData(JSON.stringify({ sourceDocs: sourceDocs }));
+   sendData(JSON.stringify({ sourceDocs: sourceDocs}));
 
  
 
@@ -430,5 +331,7 @@ sendData("[DONE]")
 res.end();
 
 }
+
+ 
 
  

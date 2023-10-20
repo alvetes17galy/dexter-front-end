@@ -252,13 +252,53 @@ export default function Home() {
 
   //handle form submission
 
+ 
+
+  if (typeof document !== 'undefined') {
+
+    // Your code that uses the document object
+
+    document.addEventListener("visibilitychange", function () {
+
+      if (document.hidden) {
+
+    console.log("HIDDEN")
+
+      } else {
+
+        console.log('unhidden')
+
+      }
+
+    });
+
+  }
+
+ 
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   function handleSubmit(e: any) {
+
+ 
 
  
 
     const token = localStorage.getItem("token"); //Gets auth token from login response
 
     e.preventDefault();
+
+ 
+
+    if (isSubmitting) {
+
+      console.log("Switching tab doesn't stop request")
+
+      return;
+
+    }
+
+    setIsSubmitting(true);
 
  
 
@@ -416,12 +456,6 @@ export default function Home() {
 
    
 
-            // The last token may be incomplete, so we store it in pendingData
-
-           
-
-   
-
             // Process complete tokens
 
             if (data.sourceDocs) {
@@ -480,7 +514,7 @@ export default function Home() {
 
    
 
- 
+    setIsSubmitting(false);
 
   }
 
@@ -1049,70 +1083,8 @@ export default function Home() {
   }
 
  
-/*return (
- 
-      <>
- 
-        <div className={styles.fullscreenoverlay}>
- 
-  
- 
-          <div className={styles.overlaycontent}>
- 
-            <p className={styles.developmentmessage}>
- 
-              Sorry, we are under development as of<b>{' '}
- 
-                {new Date().toLocaleTimeString('en-US', {
- 
-                  hour: 'numeric',
- 
-                  minute: 'numeric',
- 
-                  hour12: true
- 
-                })}{' '}
- 
-                {new Date().toLocaleDateString('en-US', {
- 
-                  month: 'numeric',
- 
-                  day: 'numeric',
- 
-                  year: 'numeric'
- 
-                })}</b>
- 
-              . Thank you for your patience.
- 
-              <br />
- 
-              <br /> <img src="/dexter.png" alt="Logo" className={styles.logo} />
- 
-              Bests,
- 
-              <br />
- 
-              <b> Dexter</b>
- 
-  
- 
-            </p>
- 
-          </div>
- 
-        </div>
- 
-  
- 
-  
- 
-      </>
- 
-    );*/
 
-    
-  /* return (
+   /*return (
 
      <>
 
@@ -1172,11 +1144,11 @@ export default function Home() {
 
      </>
 
-   );
+   );*/
 
  
 
- }*/
+ 
 
  
 
@@ -1294,41 +1266,67 @@ export default function Home() {
 
                     }
 
-                    const messageText = message.message.replace(/\\n/g, '\n').replace(/<\/s>/g, '').replace(/\\/g, '');;
+                   
 
  
 
-  const messageTextWithLineBreaks = messageText
-
-    .split('\n')
-
-    .map((line, i) => (
-
-      <React.Fragment key={i}>
-
-        {i > 0 && <p></p>} 
-
-        {line}
-
-      </React.Fragment>
-
-    ));
-
-                    return (
-
-                      <>
-
-                        <div key={`chatMessage-${index}`} className={className}>
-
-                          {icon}
-
-                          <div className={styles.markdownanswer}>
-
-                            {messageTextWithLineBreaks}
-
  
 
-                          </div>
+                    const messageText = message.message
+
+                    .replace(/\\n\\n/g, '<br/><br/>') // Replace \\n\\n with double line breaks
+
+                    .replace(/\\n/g, '<br/>') // Replace \\n with a single line break
+
+                    .replace(/<\/s>/g, '')
+
+                    .replace(/\\/g, '')
+
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+                 
+
+                  const createMarkup = (text: string) => {
+
+                    return { __html: text };
+
+                  };
+
+                 
+
+                  const messageTextWithLineBreaks = messageText
+
+                    .split('<br><br>') // Split using double line breaks
+
+                    .map((para, i) => (
+
+                      <React.Fragment key={i}>
+
+                        {i > 0 && <p></p>}
+
+                        <div dangerouslySetInnerHTML={createMarkup(para)}></div>
+
+                      </React.Fragment>
+
+                    ));
+
+                 
+
+                  return (
+
+                    <>
+
+                      <div key={`chatMessage-${index}`} className={className}>
+
+                        {icon}
+
+                        <div className={styles.markdownanswer}>
+
+                          {messageTextWithLineBreaks}
+
+                        </div>
+
+ 
 
  
 
@@ -1678,14 +1676,12 @@ export default function Home() {
 
     </>
 
-  ); 
+  );
 
  
 
  
 
 }
-
- 
 
  
